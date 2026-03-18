@@ -5,7 +5,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import { Navigate } from 'react-router-dom';
+import AppLayout from './components/layout/AppLayout';
+import Dashboard from './pages/Dashboard';
+import Paths from './pages/Paths';
+import PathDetail from './pages/PathDetail';
+import Rooms from './pages/Rooms';
+import RoomDetail from './pages/RoomDetail';
+import Leaderboard from './pages/Leaderboard';
+import Profile from './pages/Profile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,7 +41,16 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/" element={<Navigate to="/Dashboard" replace />} />
+      <Route element={<AppLayout />}>
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Paths" element={<Paths />} />
+        <Route path="/PathDetail" element={<PathDetail />} />
+        <Route path="/Rooms" element={<Rooms />} />
+        <Route path="/RoomDetail" element={<RoomDetail />} />
+        <Route path="/Leaderboard" element={<Leaderboard />} />
+        <Route path="/Profile" element={<Profile />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
