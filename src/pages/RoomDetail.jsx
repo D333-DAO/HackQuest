@@ -1,0 +1,197 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, CheckCircle2, HelpCircle, Zap, Send } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+
+const diffColors = {
+  easy: 'bg-primary/10 text-primary border-primary/20',
+  medium: 'bg-accent/10 text-accent border-accent/20',
+  hard: 'bg-destructive/10 text-destructive border-destructive/20',
+};
+
+export default function RoomDetail() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const roomId = urlParams.get('id');
+  const queryClient = useQueryClient();
+  const [answers, setAnswers] = useState({});
+  const [showHints, setShowHints] = useState({});
+
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  const { data: room, isLoading } = useQuery({
+    queryKey: ['room', roomId],
+    queryFn: async () => {
+      const rooms = await base44.entities.Room.filter({ id: roomId });
+      return rooms[0];
+    },
+    enabled: !!roomId,
+  });
+
+  const { data: myProgress } = useQuery({
+    queryKey: ['room-progress', roomId, user?.email],
+    queryFn: async () => {
+      const list = await base44.entities.UserProgress.filter({ user_email: user.email, room_id: roomId });
+      return list[0] || null;
+    },
+    enabled: !!user?.email && !!roomId,
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async ({ taskIdx, qIdx, answer }) => {
+      const task = room.tasks[taskIdx];
+      const question = task.questions[qIdx];
+      if (answer.toLowerCase().trim() !== question.answer.toLowerCase().trim()) {
+        throw new Error('Incorrect answer');
+      }
+
+      const globalIdx = room.tasks.slice(0, taskIdx).reduce((s, t) => s + (t.questions?.length || 0), 0) + qIdx;
+      const currentCompleted = myProgress?.completed_questions || [];
+      if (currentCompleted.includes(globalIdx)) return;
+
+      const newCompleted = [...currentCompleted, globalIdx];
+      const totalQuestions = room.tasks.reduce((s, t) => s + (t.questions?.length || 0), 0);
+      const allDone = newCompleted.length >= totalQuestions;
+      const pointsEarned = (myProgress?.points_earned || 0) + (question.points || 10);
+
+      if (myProgress) {
+        await base44.entities.UserProgress.update(myProgress.id, {
+          completed_questions: newCompleted,
+          completed: allDone,
+          points_earned: pointsEarned,
+        });
+      } else {
+        await base44.entities.UserProgress.create({
+          user_email: user.email,
+          room_id: roomId,
+          completed_questions: newCompleted,
+          completed: allDone,
+          points_earned: question.points || 10,
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['room-progress'] });
+      queryClient.invalidateQueries({ queryKey: ['my-progress'] });
+      queryClient.invalidateQueries({ queryKey: ['all-progress'] });
+      toast.success('Correct! 🎉');
+    },
+    onError: () => {
+      toast.error('Incorrect answer. Try again!');
+    },
+  });
+
+  if (isLoading || !room) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const completedSet = new Set(myProgress?.completed_questions || []);
+  let globalQIdx = 0;
+
+  return (
+    <div className="space-y-6 max-w-4xl mx-auto">
+      <Link to="/Rooms" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back to Rooms
+      </Link>
+
+      <div className="bg-card border border-border rounded-2xl p-6 lg:p-8">
+        <div className="flex items-start justify-between gap-4 mb-2">
+          <h1 className="text-2xl font-bold text-foreground">{room.title}</h1>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Badge variant="outline" className={diffColors[room.difficulty] || diffColors.easy}>{room.difficulty}</Badge>
+            <div className="flex items-center gap-1 text-primary">
+              <Zap className="w-4 h-4" />
+              <span className="text-sm font-bold">{room.points} pts</span>
+            </div>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground">{room.description}</p>
+        {myProgress?.completed && (
+          <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
+            <span className="text-sm font-medium text-primary">Room Completed!</span>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        {room.tasks?.map((task, taskIdx) => (
+          <div key={taskIdx} className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-base font-semibold text-foreground mb-1">Task {taskIdx + 1}: {task.title}</h3>
+            <p className="text-sm text-muted-foreground mb-4">{task.description}</p>
+            <div className="space-y-3">
+              {task.questions?.map((q, qIdx) => {
+                const gIdx = globalQIdx++;
+                const isDone = completedSet.has(gIdx);
+                const key = `${taskIdx}-${qIdx}`;
+                return (
+                  <div key={qIdx} className={`p-4 rounded-xl border ${isDone ? 'bg-primary/5 border-primary/20' : 'bg-secondary/50 border-border'}`}>
+                    <div className="flex items-start gap-3">
+                      {isDone ? (
+                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <span className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center text-xs text-muted-foreground flex-shrink-0 mt-0.5">
+                          {qIdx + 1}
+                        </span>
+                      )}
+                      <div className="flex-1 space-y-2">
+                        <p className="text-sm text-foreground font-medium">{q.question}</p>
+                        {!isDone && (
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Your answer..."
+                              value={answers[key] || ''}
+                              onChange={(e) => setAnswers(prev => ({ ...prev, [key]: e.target.value }))}
+                              className="h-9 bg-background text-sm"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && answers[key]) {
+                                  submitMutation.mutate({ taskIdx, qIdx, answer: answers[key] });
+                                }
+                              }}
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => submitMutation.mutate({ taskIdx, qIdx, answer: answers[key] || '' })}
+                              disabled={!answers[key]}
+                            >
+                              <Send className="w-4 h-4" />
+                            </Button>
+                            {q.hint && (
+                              <Button size="sm" variant="ghost" onClick={() => setShowHints(prev => ({ ...prev, [key]: !prev[key] }))}>
+                                <HelpCircle className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                        {showHints[key] && q.hint && !isDone && (
+                          <p className="text-xs text-accent bg-accent/10 p-2 rounded-lg">{q.hint}</p>
+                        )}
+                        {isDone && <p className="text-xs text-primary">+{q.points || 10} points</p>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+        {(!room.tasks || room.tasks.length === 0) && (
+          <div className="bg-card border border-border rounded-2xl p-8 text-center">
+            <p className="text-sm text-muted-foreground">No tasks available for this room yet.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
