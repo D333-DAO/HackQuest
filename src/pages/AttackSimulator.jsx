@@ -64,6 +64,7 @@ export default function AttackSimulator() {
   const [phase, setPhase]                   = useState(null);   // current phase name
   const [phaseIdx, setPhaseIdx]             = useState(-1);
   const [runHistory, setRunHistory]         = useState([]);
+  const [completedRun, setCompletedRun]     = useState(null); // { scenario, node, metrics, logs, status }
 
   const appendLog = (entry) => setLogs(prev => [...prev, entry].slice(-300));
 
