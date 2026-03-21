@@ -1,7 +1,9 @@
 import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import StatsGrid from '../components/dashboard/StatsGrid';
+import UserBanner from '../components/dashboard/UserBanner';
+import DailyStreak from '../components/dashboard/DailyStreak';
+import QuickActions from '../components/dashboard/QuickActions';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import FeaturedPaths from '../components/dashboard/FeaturedPaths';
 import NetworkTopology from '../components/dashboard/NetworkTopology';
@@ -14,66 +16,65 @@ export default function Dashboard() {
     queryFn: () => base44.auth.me(),
   });
 
-  const { data: progress, isLoading: loadingProgress } = useQuery({
+  const { data: progress = [], isLoading: loadingProgress } = useQuery({
     queryKey: ['my-progress', user?.email],
     queryFn: () => base44.entities.UserProgress.filter({ user_email: user.email }),
     enabled: !!user?.email,
-    initialData: [],
   });
 
-  const { data: rooms, isLoading: loadingRooms } = useQuery({
+  const { data: rooms = [], isLoading: loadingRooms } = useQuery({
     queryKey: ['rooms'],
     queryFn: () => base44.entities.Room.list(),
-    initialData: [],
   });
 
-  const { data: paths, isLoading: loadingPaths } = useQuery({
+  const { data: paths = [], isLoading: loadingPaths } = useQuery({
     queryKey: ['paths'],
     queryFn: () => base44.entities.LearningPath.list(),
-    initialData: [],
   });
 
-  const totalPoints = progress.reduce((sum, p) => sum + (p.points_earned || 0), 0);
+  const totalPoints    = progress.reduce((sum, p) => sum + (p.points_earned || 0), 0);
   const completedRooms = progress.filter(p => p.completed).length;
-
-  const isLoading = loadingProgress || loadingRooms || loadingPaths;
+  const streak         = progress.length;
+  const isLoading      = loadingProgress || loadingRooms || loadingPaths;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Greeting */}
-      <div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
-          Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''} 👋
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">Continue your cyber security journey</p>
-      </div>
-
+    <div className="space-y-6">
+      {/* User Banner */}
       {isLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl" />)}
-        </div>
+        <Skeleton className="h-28 rounded-2xl" />
       ) : (
-        <StatsGrid
+        <UserBanner
+          user={user}
           points={totalPoints}
-          rooms={completedRooms}
-          streak={progress.length}
-          rank={1}
+          completedRooms={completedRooms}
+          streak={streak}
         />
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <NetworkTopology />
-        <GlobalThreatFeed />
+      {/* Main grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Left col — topology + threat feed */}
+        <div className="xl:col-span-2 space-y-6">
+          <NetworkTopology />
+          <GlobalThreatFeed />
+        </div>
+
+        {/* Right col — streak, quick access, activity */}
+        <div className="space-y-6">
+          <DailyStreak streak={streak} />
+          <QuickActions />
+          {isLoading ? (
+            <Skeleton className="h-64 rounded-2xl" />
+          ) : (
+            <RecentActivity progress={progress} rooms={rooms} />
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3">
-          <FeaturedPaths paths={paths} />
-        </div>
-        <div className="lg:col-span-2">
-          <RecentActivity progress={progress} rooms={rooms} />
-        </div>
-      </div>
+      {/* Featured paths */}
+      {!loadingPaths && paths.length > 0 && (
+        <FeaturedPaths paths={paths} />
+      )}
     </div>
   );
 }
