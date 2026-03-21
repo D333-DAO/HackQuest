@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
-import Dashboard from './pages/Dashboard.jsx';
+import Dashboard from './pages/Dashboard';
 import Paths from './pages/Paths';
 import PathDetail from './pages/PathDetail';
 import Rooms from './pages/Rooms';
