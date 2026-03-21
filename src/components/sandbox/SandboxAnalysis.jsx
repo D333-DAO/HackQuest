@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Brain, ShieldCheck, AlertTriangle, Loader2, ChevronDown, ChevronRight, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
+import IncidentResponse from './IncidentResponse';
 
 function Section({ icon: Icon, title, color, children }) {
   const [open, setOpen] = useState(true);
