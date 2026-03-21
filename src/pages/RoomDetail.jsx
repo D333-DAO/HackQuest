@@ -136,6 +136,10 @@ export default function RoomDetail() {
         )}
       </div>
 
+      {showTerminal && (
+        <TerminalEmulator roomContext={{ title: room.title, category: room.category, difficulty: room.difficulty }} />
+      )}
+
       <div className="space-y-4">
         {room.tasks?.map((task, taskIdx) => (
           <div key={taskIdx} className="bg-card border border-border rounded-2xl p-6">
