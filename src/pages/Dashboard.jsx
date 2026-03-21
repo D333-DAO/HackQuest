@@ -61,7 +61,10 @@ export default function Dashboard() {
         />
       )}
 
-      <NetworkTopology />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <NetworkTopology />
+        <GlobalThreatFeed />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3">
