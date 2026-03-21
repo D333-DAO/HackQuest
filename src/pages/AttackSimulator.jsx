@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link as RouterLink } from 'react-router-dom';
 import { Wrench, History } from 'lucide-react';
+import SimulatorReport from '@/components/simulator/SimulatorReport';
 
 const NODES = [
   { id: 'web-server',          name: 'Web Server',         ip: '10.0.1.10', os: 'Ubuntu 22.04',   services: ['HTTP:80','HTTPS:443','SSH:22']  },
