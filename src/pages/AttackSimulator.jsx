@@ -77,6 +77,7 @@ export default function AttackSimulator() {
     setLogs([]);
     setPhase(null);
     setPhaseIdx(-1);
+    setCompletedRun(null);
     resetNetwork();
   };
 
