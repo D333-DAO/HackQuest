@@ -173,6 +173,12 @@ Return JSON:
           <Terminal className="w-4 h-4" /> Simulation
         </button>
         <button
+          onClick={() => setActiveTab('terminal')}
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'terminal' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <TerminalSquare className="w-4 h-4" /> Interactive Terminal
+        </button>
+        <button
           onClick={() => setActiveTab('analysis')}
           className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'analysis' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
         >
@@ -184,12 +190,16 @@ Return JSON:
       </div>
 
       {/* Tab content */}
-      {activeTab === 'simulation' ? (
+      {activeTab === 'simulation' && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
           <SandboxAlertChart metrics={metrics} />
         </div>
-      ) : (
+      )}
+      {activeTab === 'terminal' && (
+        <InteractiveTerminal target={target} />
+      )}
+      {activeTab === 'analysis' && (
         <SandboxAnalysis logs={logs} target={target} metrics={metrics} />
       )}
     </div>
