@@ -7,6 +7,7 @@ import SimulatorNodeSelector from '@/components/simulator/SimulatorNodeSelector'
 import SimulatorScenarioCard from '@/components/simulator/SimulatorScenarioCard';
 import SimulatorLaunchPanel from '@/components/simulator/SimulatorLaunchPanel';
 import SimulatorLogStream from '@/components/simulator/SimulatorLogStream';
+import DefenseDashboard from '@/components/simulator/DefenseDashboard';
 import { applyAttackMetrics, setActiveAttack, resetNetwork, updateNodeStatus } from '@/lib/networkStore';
 
 const NODES = [
