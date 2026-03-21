@@ -37,6 +37,10 @@ export default function AttackSimulator() {
 
   const appendLog = (entry) => setLogs(prev => [...prev, entry].slice(-300));
 
+  const handleDefenseAction = (logEntry) => {
+    appendLog(logEntry);
+  };
+
   const reset = () => {
     setIsRunning(false);
     setLogs([]);
