@@ -42,6 +42,7 @@ export default function Sandbox({ roomContext }) {
     setIsRunning(true);
     setIsLoadingAttack(true);
 
+    setActiveAttack(attack);
     appendLog([{
       time: new Date().toISOString(),
       type: 'info',
