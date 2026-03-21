@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle, Terminal, Brain } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
 import SandboxTargetSelector from '@/components/sandbox/SandboxTargetSelector';
 import SandboxAttackPanel from '@/components/sandbox/SandboxAttackPanel';
 import SandboxTerminal from '@/components/sandbox/SandboxTerminal';
 import SandboxMetrics from '@/components/sandbox/SandboxMetrics';
+import SandboxAnalysis from '@/components/sandbox/SandboxAnalysis';
 import { base44 } from '@/api/base44Client';
 
 const INITIAL_METRICS = { blocked: 0, detected: 0, connections: 0, alerts: [] };
