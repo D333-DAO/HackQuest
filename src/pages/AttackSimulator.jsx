@@ -296,6 +296,18 @@ export default function AttackSimulator() {
         <SimulatorLogStream logs={logs} isRunning={isRunning} />
       )}
 
+      {/* Post-simulation report */}
+      {completedRun && (
+        <SimulatorReport
+          scenario={completedRun.scenario}
+          node={completedRun.node}
+          metrics={completedRun.metrics}
+          logs={completedRun.logs}
+          status={completedRun.status}
+          onClose={() => setCompletedRun(null)}
+        />
+      )}
+
       {/* Run history */}
       {runHistory.length > 0 && (
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
