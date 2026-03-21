@@ -110,6 +110,7 @@ Return JSON:
             connections: prev.connections + (m.connections_attempted || 0),
             alerts: [...prev.alerts, { attack: attack.name, level: m.alert_level || 'medium', time: new Date().toISOString() }].slice(-20),
           }));
+          applyAttackMetrics(target.id, m, attack.name);
           setIsRunning(false);
         }
       }, i * 350);
