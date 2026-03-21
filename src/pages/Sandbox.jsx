@@ -9,6 +9,7 @@ import SandboxTerminal from '@/components/sandbox/SandboxTerminal';
 import SandboxMetrics from '@/components/sandbox/SandboxMetrics';
 import SandboxAnalysis from '@/components/sandbox/SandboxAnalysis';
 import { base44 } from '@/api/base44Client';
+import { applyAttackMetrics, setActiveAttack, resetNetwork } from '@/lib/networkStore';
 
 const INITIAL_METRICS = { blocked: 0, detected: 0, connections: 0, alerts: [] };
 
