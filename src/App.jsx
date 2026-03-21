@@ -14,6 +14,7 @@ import Rooms from './pages/Rooms';
 import RoomDetail from './pages/RoomDetail';
 import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
+import SkillTree from './pages/SkillTree';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
