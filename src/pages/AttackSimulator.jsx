@@ -144,6 +144,30 @@ export default function AttackSimulator() {
 
       appendLog({ time: new Date().toISOString(), type: 'system', source: 'SIMULATOR', message: `■ Attack sequence complete — ${metrics.blocked_count} connections blocked, ${metrics.detected_count} alerts raised` });
 
+      // Determine overall status
+      const attackStatus = metrics.blocked_count > metrics.connections_attempted * 0.6
+        ? 'blocked'
+        : metrics.blocked_count > 0
+        ? 'partial'
+        : 'success';
+
+      // Persist to AttackLog
+      base44.entities.AttackLog.create({
+        scenario_name: selectedScenario.name,
+        scenario_icon: selectedScenario.icon,
+        scenario_category: selectedScenario.category,
+        scenario_severity: selectedScenario.severity,
+        target_name: selectedNode.name,
+        target_ip: selectedNode.ip,
+        target_os: selectedNode.os,
+        status: attackStatus,
+        blocked_count: metrics.blocked_count,
+        detected_count: metrics.detected_count,
+        connections_attempted: metrics.connections_attempted,
+        alert_level: metrics.alert_level,
+        log_count: logs.length,
+      });
+
       setRunHistory(prev => [{
         scenario: selectedScenario.name,
         target: selectedNode.name,
