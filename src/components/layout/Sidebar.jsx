@@ -10,6 +10,7 @@ const navItems = [
   { label: 'Rooms', path: '/Rooms', icon: Server },
   { label: 'Sandbox', path: '/Sandbox', icon: FlaskConical },
   { label: 'Attack Simulator', path: '/AttackSimulator', icon: Zap },
+  { label: 'Scenario Builder', path: '/ScenarioBuilder', icon: Wrench },
   { label: 'Leaderboard', path: '/Leaderboard', icon: Trophy },
   { label: 'Profile', path: '/Profile', icon: User },
 ];
