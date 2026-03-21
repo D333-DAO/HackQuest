@@ -180,6 +180,18 @@ export default function AttackSimulator() {
         detected: metrics.detected_count,
       }, ...prev].slice(0, 8));
 
+      // Capture logs snapshot for report (use functional update to get latest)
+      setLogs(currentLogs => {
+        setCompletedRun({
+          scenario: selectedScenario,
+          node: selectedNode,
+          metrics,
+          logs: currentLogs,
+          status: attackStatus,
+        });
+        return currentLogs;
+      });
+
       setIsRunning(false);
       setPhase(null);
       setPhaseIdx(-1);
