@@ -60,6 +60,8 @@ export default function Dashboard() {
         />
       )}
 
+      <NetworkTopology />
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3">
           <FeaturedPaths paths={paths} />
