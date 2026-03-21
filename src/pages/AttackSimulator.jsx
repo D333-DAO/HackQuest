@@ -31,6 +31,31 @@ function interpolate(msg, target) {
 }
 
 export default function AttackSimulator() {
+  const { data: customScenarios = [] } = useQuery({
+    queryKey: ['custom-scenarios'],
+    queryFn: () => base44.entities.CustomScenario.list('-created_date'),
+  });
+
+  // Normalize custom scenarios to match built-in shape
+  const allScenarios = [
+    ...ATTACK_SCENARIOS,
+    ...customScenarios.map(s => ({
+      id: s.id,
+      name: s.name,
+      icon: s.icon || '💀',
+      category: s.category || 'Custom',
+      color: 'text-accent',
+      border: 'border-accent/30',
+      bg: 'bg-accent/10',
+      severity: s.severity || 'medium',
+      compatibleTargets: s.compatible_targets || ['web-server','db-server','windows-workstation','iot-device'],
+      description: s.description || '',
+      phases: s.phases || [{ label: 'Attack', duration: 1000 }],
+      logTemplates: (s.log_templates || []).map(t => ({ type: t.type, messages: t.messages })),
+      isCustom: true,
+    })),
+  ];
+
   const [selectedNode, setSelectedNode]     = useState(null);
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [isRunning, setIsRunning]           = useState(false);
