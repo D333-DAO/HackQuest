@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Map, Server, Trophy, User, Menu, X, Shield } from 'lucide-react';
+import { LayoutDashboard, Map, Server, Trophy, User, Menu, X, Shield, GitBranch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
   { label: 'Dashboard', path: '/Dashboard', icon: LayoutDashboard },
+  { label: 'Skill Tree', path: '/SkillTree', icon: GitBranch },
   { label: 'Learning Paths', path: '/Paths', icon: Map },
   { label: 'Rooms', path: '/Rooms', icon: Server },
   { label: 'Leaderboard', path: '/Leaderboard', icon: Trophy },
