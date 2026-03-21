@@ -211,6 +211,11 @@ export default function AttackSimulator() {
               {phase || 'ATTACK RUNNING'}
             </span>
           )}
+          <RouterLink to="/AttackHistory">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <History className="w-3.5 h-3.5" /> History
+            </Button>
+          </RouterLink>
           <RouterLink to="/ScenarioBuilder">
             <Button variant="outline" size="sm" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> Custom Scenarios
