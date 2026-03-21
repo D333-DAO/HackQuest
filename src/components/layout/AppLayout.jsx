@@ -1,33 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import TopBar from './TopBar';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import TopNav from './TopNav';
 
 export default function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const { data: progressList } = useQuery({
-    queryKey: ['all-progress'],
-    queryFn: async () => {
-      const user = await base44.auth.me();
-      return base44.entities.UserProgress.filter({ user_email: user.email });
-    },
-    initialData: [],
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => base44.auth.me(),
   });
 
-  const totalPoints = progressList.reduce((sum, p) => sum + (p.points_earned || 0), 0);
+  const { data: progress = [] } = useQuery({
+    queryKey: ['my-progress', user?.email],
+    queryFn: () => base44.entities.UserProgress.filter({ user_email: user.email }),
+    enabled: !!user?.email,
+  });
+
+  const totalPoints = progress.reduce((sum, p) => sum + (p.points_earned || 0), 0);
+  const streak = progress.length;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-      <div className="lg:ml-64">
-        <TopBar onMenuClick={() => setSidebarOpen(true)} userPoints={totalPoints} streak={progressList.length} />
-        <main className="p-4 lg:p-8">
-          <Outlet />
-        </main>
-      </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <TopNav user={user} userPoints={totalPoints} streak={streak} />
+      <main className="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full">
+        <Outlet />
+      </main>
     </div>
   );
 }
