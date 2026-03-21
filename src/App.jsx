@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import SkillTree from './pages/SkillTree';
 import Sandbox from './pages/Sandbox';
 import AttackSimulator from './pages/AttackSimulator';
+import ScenarioBuilder from './pages/ScenarioBuilder';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
