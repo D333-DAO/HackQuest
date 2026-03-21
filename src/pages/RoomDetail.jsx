@@ -119,15 +119,23 @@ export default function RoomDetail() {
           </div>
         </div>
         <p className="text-sm text-muted-foreground mb-4">{room.description}</p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowTerminal(v => !v)}
-          className="flex items-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
-        >
-          <Terminal className="w-4 h-4" />
-          {showTerminal ? 'Hide Terminal' : 'Open Practice Terminal'}
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTerminal(v => !v)}
+            className="flex items-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
+          >
+            <Terminal className="w-4 h-4" />
+            {showTerminal ? 'Hide Terminal' : 'Open Practice Terminal'}
+          </Button>
+          <Link to="/Sandbox">
+            <Button variant="outline" size="sm" className="flex items-center gap-2 border-amber-400/30 text-amber-400 hover:bg-amber-400/10">
+              <FlaskConical className="w-4 h-4" />
+              Attack Sandbox
+            </Button>
+          </Link>
+        </div>
         {myProgress?.completed && (
           <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
             <CheckCircle2 className="w-5 h-5 text-primary" />
