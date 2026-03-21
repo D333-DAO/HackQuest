@@ -8,25 +8,26 @@ export default function SkillNode({ node, unlocked, complete, stats, accentColor
   return (
     <button
       onClick={onSelect}
+      disabled={!unlocked}
       className={cn(
-        'flex-1 min-w-[140px] text-left p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer',
+        'flex-1 min-w-[150px] text-left p-4 rounded-xl border-2 transition-all duration-200',
         complete
           ? 'bg-primary/10 border-primary/40 hover:border-primary/60'
           : unlocked
-          ? 'bg-secondary/60 border-border hover:border-accent/40'
-          : 'bg-secondary/20 border-border/40 opacity-60 cursor-not-allowed',
-        selected && 'ring-2 ring-offset-2 ring-offset-background',
+          ? 'bg-secondary/60 border-border hover:border-accent/40 cursor-pointer'
+          : 'bg-secondary/20 border-border/30 opacity-50 cursor-not-allowed',
+        selected && 'ring-2 ring-inset',
       )}
-      style={selected ? { ringColor: accentColor } : {}}
-      disabled={!unlocked}
+      style={selected ? { outline: `2px solid ${accentColor}`, outlineOffset: 2 } : {}}
     >
-      <div className="flex items-start justify-between mb-2">
+      {/* Icon + lock pts */}
+      <div className="flex items-start justify-between mb-2.5">
         <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
-          style={{ background: unlocked ? `${accentColor}20` : undefined }}
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{ background: unlocked ? `${accentColor}20` : 'rgba(51,65,85,0.4)' }}
         >
           {complete ? (
-            <CheckCircle2 className="w-4 h-4 text-primary" />
+            <CheckCircle2 className="w-5 h-5 text-primary" />
           ) : unlocked ? (
             <Zap className="w-4 h-4" style={{ color: accentColor }} />
           ) : (
@@ -34,18 +35,24 @@ export default function SkillNode({ node, unlocked, complete, stats, accentColor
           )}
         </div>
         {!unlocked && (
-          <span className="text-xs text-muted-foreground font-mono">{node.points}pts</span>
+          <span className="text-[10px] font-mono text-muted-foreground bg-secondary border border-border/60 rounded px-1.5 py-0.5">
+            {node.points}pts
+          </span>
+        )}
+        {complete && (
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">✓</span>
         )}
       </div>
 
       <p className="text-sm font-semibold text-foreground leading-tight mb-1">{node.title}</p>
-      <p className="text-xs text-muted-foreground line-clamp-2">{node.description}</p>
+      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{node.description}</p>
 
+      {/* Progress bar (only when unlocked and has rooms) */}
       {unlocked && stats.total > 0 && (
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground">{stats.completed}/{stats.total} rooms</span>
-            <span className="text-xs font-mono" style={{ color: accentColor }}>{progress}%</span>
+        <div className="mt-3 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-muted-foreground">{stats.completed}/{stats.total} rooms</span>
+            <span className="text-[10px] font-mono font-semibold" style={{ color: accentColor }}>{progress}%</span>
           </div>
           <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
             <div
@@ -56,8 +63,11 @@ export default function SkillNode({ node, unlocked, complete, stats, accentColor
         </div>
       )}
 
+      {/* Unlock hint */}
       {!unlocked && (
-        <p className="mt-2 text-xs text-muted-foreground">Earn {node.points} pts to unlock</p>
+        <p className="mt-2 text-[10px] text-muted-foreground">
+          🔒 Earn {node.points - 0} pts to unlock
+        </p>
       )}
     </button>
   );
