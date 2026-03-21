@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, HelpCircle, Zap, Send, Terminal } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, HelpCircle, Zap, Send, Terminal, FlaskConical } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
