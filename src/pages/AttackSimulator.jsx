@@ -205,6 +205,14 @@ export default function AttackSimulator() {
         onLaunch={launchAttack}
       />
 
+      {/* Defense Dashboard — shown while attack is running */}
+      <DefenseDashboard
+        isActive={isRunning}
+        node={selectedNode}
+        scenario={selectedScenario}
+        onAction={handleDefenseAction}
+      />
+
       {/* Log stream */}
       {logs.length > 0 && (
         <SimulatorLogStream logs={logs} isRunning={isRunning} />
