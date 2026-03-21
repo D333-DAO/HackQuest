@@ -288,6 +288,9 @@ Return as JSON.`;
               ))}
             </ol>
           </Section>
+
+          {/* Incident Response / Auto-Remediate */}
+          <IncidentResponse vulnerabilities={analysis.vulnerabilities} target={target} />
         </div>
       )}
     </div>
