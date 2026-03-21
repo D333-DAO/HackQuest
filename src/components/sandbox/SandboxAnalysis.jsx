@@ -84,6 +84,117 @@ Return as JSON.`;
     setIsLoading(false);
   };
 
+  const exportPDF = () => {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 48;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    const checkPage = (needed = 20) => {
+      if (y + needed > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        y = margin;
+      }
+    };
+
+    const writeText = (text, { fontSize = 10, bold = false, color = [30, 30, 30], indent = 0, lineHeight = 14 } = {}) => {
+      doc.setFontSize(fontSize);
+      doc.setFont('helvetica', bold ? 'bold' : 'normal');
+      doc.setTextColor(...color);
+      const lines = doc.splitTextToSize(text, contentW - indent);
+      lines.forEach(line => {
+        checkPage(lineHeight + 2);
+        doc.text(line, margin + indent, y);
+        y += lineHeight;
+      });
+    };
+
+    const writeDivider = () => {
+      checkPage(10);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(margin, y, margin + contentW, y);
+      y += 10;
+    };
+
+    // Header
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, pageW, 70, 'F');
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(34, 197, 94);
+    doc.text('Security Analysis Report', margin, 30);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(148, 163, 184);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, margin, 46);
+    doc.text(`Target: ${target?.name || 'Unknown'} (${target?.ip || 'N/A'}) — OS: ${target?.os || 'Unknown'}`, margin, 58);
+    y = 90;
+
+    // Risk Score
+    writeText(`Overall Risk Score: ${analysis.risk_score}/10`, { fontSize: 14, bold: true, color: analysis.risk_score >= 8 ? [220, 38, 38] : analysis.risk_score >= 6 ? [234, 88, 12] : analysis.risk_score >= 4 ? [217, 119, 6] : [22, 163, 74] });
+    y += 4;
+    writeText(analysis.attack_summary, { color: [60, 60, 60] });
+    if (analysis.risk_justification) writeText(analysis.risk_justification, { color: [100, 100, 100] });
+    y += 10;
+    writeDivider();
+
+    // Vulnerabilities
+    writeText('VULNERABILITIES EXPLOITED', { fontSize: 12, bold: true, color: [15, 23, 42] });
+    y += 6;
+    (analysis.vulnerabilities || []).forEach((v, i) => {
+      checkPage(40);
+      const sevColor = v.severity?.toLowerCase() === 'critical' ? [220, 38, 38] : v.severity?.toLowerCase() === 'high' ? [234, 88, 12] : v.severity?.toLowerCase() === 'medium' ? [217, 119, 6] : [22, 163, 74];
+      writeText(`${i + 1}. ${v.name}`, { bold: true, color: [15, 23, 42] });
+      writeText(`Severity: ${v.severity?.toUpperCase()}`, { color: sevColor, indent: 12 });
+      writeText(v.explanation, { color: [60, 60, 60], indent: 12 });
+      y += 4;
+    });
+    y += 6;
+    writeDivider();
+
+    // Remediation
+    writeText('REMEDIATION PLAN', { fontSize: 12, bold: true, color: [15, 23, 42] });
+    y += 6;
+    (analysis.remediation_steps || []).forEach((step, i) => {
+      checkPage(30);
+      writeText(`Step ${i + 1}:`, { bold: true, color: [22, 163, 74] });
+      writeText(step, { color: [60, 60, 60], indent: 12 });
+      y += 4;
+    });
+    y += 6;
+    writeDivider();
+
+    // Attack Timeline
+    writeText('ATTACK TIMELINE (LAST 40 EVENTS)', { fontSize: 12, bold: true, color: [15, 23, 42] });
+    y += 6;
+    const timelineLogs = logs.slice(-40);
+    timelineLogs.forEach(log => {
+      checkPage(14);
+      const time = log.time ? new Date(log.time).toLocaleTimeString() : '';
+      const line = `[${time}] [${log.source}] ${log.message}`;
+      doc.setFontSize(8);
+      doc.setFont('courier', 'normal');
+      const typeColorMap = { attacker: [220, 38, 38], firewall: [22, 163, 74], ids: [234, 88, 12], siem: [147, 51, 234], system: [100, 116, 139] };
+      const c = typeColorMap[log.type?.toLowerCase()] || [60, 60, 60];
+      doc.setTextColor(...c);
+      const wrapped = doc.splitTextToSize(line, contentW);
+      wrapped.forEach(l => { checkPage(11); doc.text(l, margin, y); y += 11; });
+    });
+
+    // Footer on each page
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(150, 150, 150);
+      doc.text(`Page ${i} of ${pageCount} — CyberSec Training Platform`, margin, doc.internal.pageSize.getHeight() - 20);
+    }
+
+    doc.save(`security-report-${target?.name || 'sandbox'}-${Date.now()}.pdf`);
+  };
+
   const severityStyle = {
     critical: 'bg-destructive/20 text-destructive border-destructive/30',
     high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
