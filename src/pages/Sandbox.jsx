@@ -33,6 +33,7 @@ export default function Sandbox({ roomContext }) {
     setLogs([]);
     setMetrics(INITIAL_METRICS);
     setCurrentAttack(null);
+    resetNetwork();
   };
 
   const handleLaunchAttack = async (attack) => {
