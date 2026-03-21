@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Map, Server, Trophy, User, Menu, X, Shield, GitBranch } from 'lucide-react';
+import { LayoutDashboard, Map, Server, Trophy, User, X, Shield, GitBranch, FlaskConical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Skill Tree', path: '/SkillTree', icon: GitBranch },
   { label: 'Learning Paths', path: '/Paths', icon: Map },
   { label: 'Rooms', path: '/Rooms', icon: Server },
+  { label: 'Sandbox', path: '/Sandbox', icon: FlaskConical },
   { label: 'Leaderboard', path: '/Leaderboard', icon: Trophy },
   { label: 'Profile', path: '/Profile', icon: User },
 ];
