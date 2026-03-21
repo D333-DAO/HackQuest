@@ -19,6 +19,7 @@ export default function Sandbox({ roomContext }) {
   const [metrics, setMetrics] = useState(INITIAL_METRICS);
   const [currentAttack, setCurrentAttack] = useState(null);
   const [isLoadingAttack, setIsLoadingAttack] = useState(false);
+  const [activeTab, setActiveTab] = useState('simulation');
   const intervalRef = useRef(null);
 
   const appendLog = (entries) => {
