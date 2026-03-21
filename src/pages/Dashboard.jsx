@@ -5,6 +5,7 @@ import StatsGrid from '../components/dashboard/StatsGrid';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import FeaturedPaths from '../components/dashboard/FeaturedPaths';
 import NetworkTopology from '../components/dashboard/NetworkTopology';
+import GlobalThreatFeed from '../components/dashboard/GlobalThreatFeed';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
