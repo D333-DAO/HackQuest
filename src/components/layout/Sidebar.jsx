@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Map, Server, Trophy, User, X, Shield, GitBranch, FlaskConical, Zap, Wrench } from 'lucide-react';
+import { LayoutDashboard, Map, Server, Trophy, User, X, Shield, GitBranch, FlaskConical, Zap, Wrench, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
