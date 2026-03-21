@@ -168,7 +168,6 @@ Return JSON:
 
 // Inline mini alert chart component
 function SandboxAlertChart({ metrics }) {
-  const { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } = require('recharts');
   const data = [
     { name: 'Blocked', value: metrics.blocked, color: '#22c55e' },
     { name: 'Detected', value: metrics.detected, color: '#f59e0b' },
