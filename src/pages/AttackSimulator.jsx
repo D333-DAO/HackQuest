@@ -160,8 +160,8 @@ export default function AttackSimulator() {
   };
 
   const compatibleScenarios = selectedNode
-    ? ATTACK_SCENARIOS.filter(s => s.compatibleTargets.includes(selectedNode.id))
-    : ATTACK_SCENARIOS;
+    ? allScenarios.filter(s => s.compatibleTargets.includes(selectedNode.id))
+    : allScenarios;
 
   return (
     <div className="space-y-5 max-w-7xl mx-auto">
