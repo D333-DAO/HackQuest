@@ -224,14 +224,21 @@ Return as JSON.`;
               : 'Launch an attack simulation first, then come back here for an AI-powered security report.'}
           </p>
         </div>
-        <Button
-          onClick={runAnalysis}
-          disabled={!hasLogs || isLoading}
-          className="gap-2 shrink-0"
-        >
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
-          {isLoading ? 'Analyzing...' : 'Run Analysis'}
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          {analysis && (
+            <Button variant="outline" onClick={exportPDF} className="gap-2">
+              <Download className="w-4 h-4" /> Export PDF
+            </Button>
+          )}
+          <Button
+            onClick={runAnalysis}
+            disabled={!hasLogs || isLoading}
+            className="gap-2"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+            {isLoading ? 'Analyzing...' : 'Run Analysis'}
+          </Button>
+        </div>
       </div>
 
       {/* Results */}
