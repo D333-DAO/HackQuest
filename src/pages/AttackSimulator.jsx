@@ -187,6 +187,11 @@ export default function AttackSimulator() {
               {phase || 'ATTACK RUNNING'}
             </span>
           )}
+          <RouterLink to="/ScenarioBuilder">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Wrench className="w-3.5 h-3.5" /> Custom Scenarios
+            </Button>
+          </RouterLink>
           <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
             <RotateCcw className="w-3.5 h-3.5" /> Reset
           </Button>
