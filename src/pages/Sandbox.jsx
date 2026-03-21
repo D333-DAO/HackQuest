@@ -159,11 +159,34 @@ Return JSON:
       {/* Metrics */}
       <SandboxMetrics metrics={metrics} />
 
-      {/* Split view: terminal + chart */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
-        <SandboxAlertChart metrics={metrics} />
+      {/* Tabs */}
+      <div className="flex gap-1 bg-secondary/50 border border-border rounded-xl p-1 w-fit">
+        <button
+          onClick={() => setActiveTab('simulation')}
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'simulation' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <Terminal className="w-4 h-4" /> Simulation
+        </button>
+        <button
+          onClick={() => setActiveTab('analysis')}
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'analysis' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <Brain className="w-4 h-4" /> Analysis
+          {logs.length > 0 && (
+            <span className="ml-1 bg-accent/20 text-accent text-[10px] font-bold px-1.5 py-0.5 rounded-full">{logs.length}</span>
+          )}
+        </button>
       </div>
+
+      {/* Tab content */}
+      {activeTab === 'simulation' ? (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
+          <SandboxAlertChart metrics={metrics} />
+        </div>
+      ) : (
+        <SandboxAnalysis logs={logs} target={target} metrics={metrics} />
+      )}
     </div>
   );
 }
