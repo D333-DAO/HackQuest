@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Brain, ShieldCheck, AlertTriangle, Loader2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Brain, ShieldCheck, AlertTriangle, Loader2, ChevronDown, ChevronRight, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 function Section({ icon: Icon, title, color, children }) {
   const [open, setOpen] = useState(true);
