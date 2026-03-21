@@ -2,6 +2,14 @@
 module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  safelist: [
+    'bg-primary/10', 'bg-primary/15', 'bg-primary/20', 'border-primary/20', 'border-primary/25', 'border-primary/30', 'border-primary/40',
+    'bg-accent/10', 'border-accent/20', 'border-accent/40',
+    'bg-amber-500/10', 'border-amber-500/20', 'border-amber-400/40', 'text-amber-400',
+    'bg-purple-500/10', 'border-purple-500/20', 'border-purple-400/40', 'text-purple-400',
+    'bg-destructive/10', 'border-destructive/25',
+    'text-primary', 'text-accent', 'text-destructive',
+  ],
   theme: {
   	extend: {
   		fontFamily: {
