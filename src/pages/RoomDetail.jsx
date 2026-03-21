@@ -21,6 +21,7 @@ export default function RoomDetail() {
   const queryClient = useQueryClient();
   const [answers, setAnswers] = useState({});
   const [showHints, setShowHints] = useState({});
+  const [showTerminal, setShowTerminal] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['me'],
