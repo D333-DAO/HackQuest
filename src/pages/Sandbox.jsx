@@ -8,6 +8,7 @@ import SandboxAttackPanel from '@/components/sandbox/SandboxAttackPanel';
 import SandboxTerminal from '@/components/sandbox/SandboxTerminal';
 import SandboxMetrics from '@/components/sandbox/SandboxMetrics';
 import SandboxAnalysis from '@/components/sandbox/SandboxAnalysis';
+import InteractiveTerminal from '@/components/sandbox/InteractiveTerminal';
 import { base44 } from '@/api/base44Client';
 import { applyAttackMetrics, setActiveAttack, resetNetwork } from '@/lib/networkStore';
 
