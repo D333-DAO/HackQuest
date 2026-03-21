@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle, Terminal, Brain } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle, Terminal, Brain, TerminalSquare } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
 import SandboxTargetSelector from '@/components/sandbox/SandboxTargetSelector';
