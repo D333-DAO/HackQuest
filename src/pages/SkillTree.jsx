@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Lock, CheckCircle2, Zap, ChevronRight, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import SkillNode from '@/components/skilltree/SkillNode';
-import SkillTreeConnectors from '@/components/skilltree/SkillTreeConnectors';
 
 // Static skill tree definition: domains, tiers, unlock requirements
 const SKILL_DOMAINS = [
