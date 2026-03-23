@@ -63,6 +63,12 @@ export default function PathDetail() {
         <ArrowLeft className="w-4 h-4" /> Back to Paths
       </Link>
 
+      {path.image_url && (
+        <div className="rounded-2xl overflow-hidden border border-border max-h-80 w-full">
+          <img src={path.image_url} alt={path.title} className="w-full h-full object-cover" />
+        </div>
+      )}
+
       <div className="bg-card border border-border rounded-2xl p-6 lg:p-8">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
           <div>
