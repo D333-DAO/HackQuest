@@ -33,6 +33,8 @@ export default function Sandbox({ roomContext }) {
   const [replaySession, setReplaySession] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const [appliedDefenses, setAppliedDefenses] = useState({ patches: [], rules: [] });
+  const [campaignStageStatuses, setCampaignStageStatuses] = useState([]);
+  const [isCampaignRunning, setIsCampaignRunning] = useState(false);
   const pendingLogsRef = useRef([]);
   const pendingMetricsRef = useRef(null);
   const intervalRef = useRef(null);
