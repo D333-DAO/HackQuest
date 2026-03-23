@@ -64,10 +64,111 @@ export default function Sandbox({ roomContext }) {
   const reset = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
+    setIsPaused(false);
     setLogs([]);
     setMetrics(INITIAL_METRICS);
     setCurrentAttack(null);
+    setAppliedDefenses({ patches: [], rules: [] });
+    pendingLogsRef.current = [];
+    pendingMetricsRef.current = null;
     resetNetwork();
+  };
+
+  const handlePause = () => {
+    setIsPaused(true);
+    appendLog([{
+      time: new Date().toISOString(),
+      type: 'system',
+      source: 'SANDBOX',
+      message: '⏸ Simulation PAUSED — Interactive Defense mode active. Apply patches or firewall rules, then resume.',
+    }]);
+  };
+
+  const handleApplyDefense = ({ type, value }) => {
+    setAppliedDefenses(prev => {
+      if (type === 'patch') return { ...prev, patches: [...prev.patches, value.id] };
+      if (type === 'rule')  return { ...prev, rules:   [...prev.rules,   value] };
+      if (type === 'remove_rule') return { ...prev, rules: prev.rules.filter(r => r !== value) };
+      return prev;
+    });
+  };
+
+  const handleResume = async () => {
+    setIsPaused(false);
+    const totalChanges = appliedDefenses.patches.length + appliedDefenses.rules.length;
+
+    if (totalChanges === 0) {
+      appendLog([{ time: new Date().toISOString(), type: 'system', source: 'SANDBOX', message: '▶ Simulation resumed — no defense changes applied.' }]);
+      return;
+    }
+
+    appendLog([{ time: new Date().toISOString(), type: 'system', source: 'SANDBOX', message: `▶ Resuming with ${totalChanges} defense change(s) — evaluating mitigation effectiveness...` }]);
+    setIsLoadingAttack(true);
+
+    const patchNames = appliedDefenses.patches.join(', ');
+    const rulesList  = appliedDefenses.rules.join('; ');
+    const prompt = `You are a cybersecurity simulation engine continuing a paused attack simulation.
+
+Attack: "${currentAttack?.name}" against ${target?.ip} (${target?.name}, OS: ${target?.os})
+
+The defender just applied these changes WHILE the attack was in progress:
+- Security patches activated: ${patchNames || 'none'}
+- New firewall rules added: ${rulesList || 'none'}
+
+Generate 8-10 realistic log lines showing how the attack NOW plays out given these defenses.
+Be specific — if WAF was enabled, show WAF blocking SQL payloads. If fail2ban was activated, show IPs being banned.
+Show whether the defenses successfully stopped the attack or if the attacker adapted.
+
+Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", "message": "..." }], "metrics": { "blocked_count": number, "detected_count": number, "connections_attempted": number, "alert_level": "low"|"medium"|"high"|"critical" }, "mitigation_outcome": "success"|"partial"|"failed", "outcome_summary": "one sentence explaining the result" }`;
+
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          lines: { type: 'array', items: { type: 'object', properties: { type: { type: 'string' }, message: { type: 'string' } } } },
+          metrics: { type: 'object', properties: { blocked_count: { type: 'number' }, detected_count: { type: 'number' }, connections_attempted: { type: 'number' }, alert_level: { type: 'string' } } },
+          mitigation_outcome: { type: 'string' },
+          outcome_summary: { type: 'string' },
+        }
+      }
+    });
+
+    setIsLoadingAttack(false);
+
+    const outcomeColors = { success: 'firewall', partial: 'ids', failed: 'attacker' };
+    const outcomeType = result.mitigation_outcome || 'partial';
+
+    appendLog([{
+      time: new Date().toISOString(),
+      type: outcomeType === 'success' ? 'firewall' : outcomeType === 'partial' ? 'ids' : 'attacker',
+      source: 'DEFENSE',
+      message: `MITIGATION RESULT [${outcomeType.toUpperCase()}]: ${result.outcome_summary || ''}`,
+    }]);
+
+    const now = new Date();
+    const newLogs = (result.lines || []).map((l, i) => ({
+      time: new Date(now.getTime() + i * 400).toISOString(),
+      type: l.type,
+      source: l.type?.toUpperCase() || 'SYSTEM',
+      message: l.message,
+    }));
+
+    newLogs.forEach((log, i) => {
+      setTimeout(() => {
+        appendLog([log]);
+        if (i === newLogs.length - 1) {
+          const m = result.metrics || {};
+          setMetrics(prev => ({
+            blocked: prev.blocked + (m.blocked_count || 0),
+            detected: prev.detected + (m.detected_count || 0),
+            connections: prev.connections + (m.connections_attempted || 0),
+            alerts: [...prev.alerts, { attack: `${currentAttack?.name} [post-defense]`, level: m.alert_level || 'low', time: new Date().toISOString() }].slice(-20),
+          }));
+          setIsRunning(false);
+        }
+      }, i * 350);
+    });
   };
 
   const handleLaunchAttack = async (attack) => {
