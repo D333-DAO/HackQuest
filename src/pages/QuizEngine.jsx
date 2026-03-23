@@ -420,6 +420,8 @@ Return JSON matching the schema exactly.`,
               onStart={handleStart}
               onLinkLab={setLinkingQuiz}
               bestScore={bestScoreMap[quiz.id] ?? null}
+              user={user}
+              isBookmarked={bookmarkSet.has(quiz.id)}
             />
           ))}
         </div>
