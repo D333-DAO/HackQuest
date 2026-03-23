@@ -30,6 +30,10 @@ export default function Sandbox({ roomContext }) {
     try { return JSON.parse(localStorage.getItem('sandbox_sessions') || '[]'); } catch { return []; }
   });
   const [replaySession, setReplaySession] = useState(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [appliedDefenses, setAppliedDefenses] = useState({ patches: [], rules: [] });
+  const pendingLogsRef = useRef([]);
+  const pendingMetricsRef = useRef(null);
   const intervalRef = useRef(null);
 
   const persistSessions = (sessions) => {
