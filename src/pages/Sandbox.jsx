@@ -314,7 +314,7 @@ Simulate a realistic "${attack.name}" attack (category: ${attack.category}) agai
 Generate a realistic sequence of ${activeDifficulty.params.log_count} terminal/log lines showing:
 1. Attacker-side commands and output (prefixed with "ATTACKER")
 2. Defensive firewall/IDS/SIEM log entries being triggered (prefixed with "FIREWALL", "IDS", or "SIEM")
-3. Some attacks partially succeed, some get blocked — be realistic
+3. Adjust detection accuracy and attacker success rate to match the difficulty level above
 
 Also return metrics:
 - blocked_count: how many attack attempts were blocked
