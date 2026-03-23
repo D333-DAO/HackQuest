@@ -23,7 +23,7 @@ function shuffle(arr) {
   return a;
 }
 
-function QuizCard({ quiz, onStart, bestScore }) {
+function QuizCard({ quiz, onStart, onLinkLab, bestScore }) {
   const diff = DIFF_STYLE[quiz.difficulty] || DIFF_STYLE.medium;
   return (
     <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-4 hover:border-primary/30 transition-colors">
@@ -44,6 +44,22 @@ function QuizCard({ quiz, onStart, bestScore }) {
         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{quiz.time_limit_minutes} min</span>
         <span className="flex items-center gap-1"><Trophy className="w-3.5 h-3.5" />Pass: {quiz.pass_threshold}%</span>
       </div>
+
+      {/* Linked lab badge */}
+      {quiz.linked_room_id ? (
+        <div className="flex items-center gap-1.5 text-[10px] bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-lg px-2.5 py-1.5 font-medium">
+          <FlaskConical className="w-3 h-3 shrink-0" />
+          <span className="truncate">Lab: {quiz.linked_room_name || quiz.linked_room_id}</span>
+        </div>
+      ) : (
+        <button
+          onClick={() => onLinkLab(quiz)}
+          className="flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-primary border border-dashed border-border hover:border-primary/40 rounded-lg px-2.5 py-1.5 transition-colors w-full"
+        >
+          <Link2 className="w-3 h-3 shrink-0" /> Link a practice lab
+        </button>
+      )}
+
       {bestScore != null && (
         <div className={`text-xs px-3 py-1.5 rounded-lg border font-medium ${
           bestScore >= quiz.pass_threshold
@@ -53,10 +69,15 @@ function QuizCard({ quiz, onStart, bestScore }) {
           Best score: {bestScore}% — {bestScore >= quiz.pass_threshold ? '✓ Passed' : 'Not passed yet'}
         </div>
       )}
-      <Button className="w-full gap-2 mt-auto" onClick={() => onStart(quiz)}>
-        <Play className="w-4 h-4" />
-        {bestScore != null ? 'Retake Quiz' : 'Start Quiz'}
-      </Button>
+      <div className="flex gap-2 mt-auto">
+        <Button className="flex-1 gap-2" onClick={() => onStart(quiz)}>
+          <Play className="w-4 h-4" />
+          {bestScore != null ? 'Retake' : 'Start'}
+        </Button>
+        <Button variant="outline" size="icon" onClick={() => onLinkLab(quiz)} title="Link lab">
+          <Link2 className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }
