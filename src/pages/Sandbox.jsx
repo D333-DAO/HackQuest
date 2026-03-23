@@ -72,9 +72,115 @@ export default function Sandbox({ roomContext }) {
     setMetrics(INITIAL_METRICS);
     setCurrentAttack(null);
     setAppliedDefenses({ patches: [], rules: [] });
+    setCampaignStageStatuses([]);
+    setIsCampaignRunning(false);
     pendingLogsRef.current = [];
     pendingMetricsRef.current = null;
     resetNetwork();
+  };
+
+  const runSingleStage = (attack, priorContext) => new Promise((resolve) => {
+    const contextNote = priorContext.length > 0
+      ? `\n\nPRIOR CAMPAIGN CONTEXT (earlier stages already executed):\n${priorContext.map((s, i) => `Stage ${i + 1}: ${s}`).join('\n')}\nThe attacker has already gained some foothold. Make this stage feel like a natural continuation.`
+      : '';
+
+    const prompt = `You are a cybersecurity simulation engine.
+Simulate a realistic "${attack.name}" attack (category: ${attack.category}) against ${target.ip} (${target.name}, OS: ${target.os}, services: ${target.services.join(', ')}).${contextNote}
+
+Generate 10-14 log lines (attacker commands + firewall/IDS/SIEM responses). Be realistic — some attempts blocked, some succeed.
+
+Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", "message": "..." }], "metrics": { "blocked_count": number, "detected_count": number, "connections_attempted": number, "alert_level": "low"|"medium"|"high"|"critical" }, "stage_outcome": "success"|"partial"|"blocked", "stage_summary": "one-sentence outcome" }`;
+
+    base44.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          lines: { type: 'array', items: { type: 'object', properties: { type: { type: 'string' }, message: { type: 'string' } } } },
+          metrics: { type: 'object', properties: { blocked_count: { type: 'number' }, detected_count: { type: 'number' }, connections_attempted: { type: 'number' }, alert_level: { type: 'string' } } },
+          stage_outcome: { type: 'string' },
+          stage_summary: { type: 'string' },
+        }
+      }
+    }).then(result => {
+      const now = new Date();
+      const newLogs = (result.lines || []).map((l, i) => ({
+        time: new Date(now.getTime() + i * 400).toISOString(),
+        type: l.type,
+        source: l.type?.toUpperCase() || 'SYSTEM',
+        message: l.message,
+      }));
+      let idx = 0;
+      const stream = setInterval(() => {
+        if (idx < newLogs.length) {
+          appendLog([newLogs[idx]]);
+          idx++;
+        } else {
+          clearInterval(stream);
+          const m = result.metrics || {};
+          setMetrics(prev => ({
+            blocked: prev.blocked + (m.blocked_count || 0),
+            detected: prev.detected + (m.detected_count || 0),
+            connections: prev.connections + (m.connections_attempted || 0),
+            alerts: [...prev.alerts, { attack: attack.name, level: m.alert_level || 'medium', time: new Date().toISOString() }].slice(-20),
+          }));
+          resolve({ summary: result.stage_summary || '', outcome: result.stage_outcome || 'partial' });
+        }
+      }, 320);
+    });
+  });
+
+  const handleRunChain = async (stageIds) => {
+    if (!target || isCampaignRunning) return;
+    const scenarios = stageIds.map(id => ATTACK_SCENARIOS.find(s => s.id === id)).filter(Boolean);
+    setIsCampaignRunning(true);
+    setIsRunning(true);
+    setCampaignStageStatuses(stageIds.map(() => 'pending'));
+
+    appendLog([{
+      time: new Date().toISOString(), type: 'system', source: 'CAMPAIGN',
+      message: `▶▶ CAMPAIGN START — ${scenarios.length} stages against ${target.name} (${target.ip})`,
+    }]);
+
+    const priorContext = [];
+
+    for (let i = 0; i < scenarios.length; i++) {
+      const attack = scenarios[i];
+      setCampaignStageStatuses(prev => prev.map((s, idx) => idx === i ? 'running' : s));
+      setCurrentAttack(attack);
+      setActiveAttack(attack);
+
+      appendLog([{
+        time: new Date().toISOString(), type: 'info', source: 'CAMPAIGN',
+        message: `── Stage ${i + 1}/${scenarios.length}: ${attack.icon} ${attack.name} ──`,
+      }]);
+
+      setIsLoadingAttack(true);
+      const { summary, outcome } = await runSingleStage(attack, priorContext);
+      setIsLoadingAttack(false);
+
+      priorContext.push(`${attack.name} → ${summary}`);
+
+      appendLog([{
+        time: new Date().toISOString(),
+        type: outcome === 'blocked' ? 'firewall' : outcome === 'success' ? 'attacker' : 'ids',
+        source: 'CAMPAIGN',
+        message: `Stage ${i + 1} result [${outcome.toUpperCase()}]: ${summary}`,
+      }]);
+
+      setCampaignStageStatuses(prev => prev.map((s, idx) => idx === i ? 'done' : s));
+
+      if (i < scenarios.length - 1) {
+        await new Promise(r => setTimeout(r, 800));
+      }
+    }
+
+    appendLog([{
+      time: new Date().toISOString(), type: 'system', source: 'CAMPAIGN',
+      message: `■■ CAMPAIGN COMPLETE — all ${scenarios.length} stages executed. Run Analysis for a full kill-chain report.`,
+    }]);
+    setIsRunning(false);
+    setIsCampaignRunning(false);
   };
 
   const handlePause = () => {
