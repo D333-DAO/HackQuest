@@ -288,8 +288,10 @@ Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", 
     });
   };
 
-  const handleLaunchAttack = async (attack) => {
+  const handleLaunchAttack = async (attack, attackDifficulty) => {
     if (!target) return;
+    const activeDifficulty = attackDifficulty || difficulty;
+    setDifficulty(activeDifficulty);
     setCurrentAttack(attack);
     setIsRunning(true);
     setIsLoadingAttack(true);
@@ -299,13 +301,17 @@ Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", 
       time: new Date().toISOString(),
       type: 'info',
       source: 'SANDBOX',
-      message: `Launching ${attack.name} against ${target.ip} (${target.name})...`,
+      message: `[${activeDifficulty.label.toUpperCase()}] Launching ${attack.name} against ${target.ip} (${target.name})...`,
     }]);
 
-    const prompt = `You are a cybersecurity simulation engine. 
+    const diffCtx = buildDifficultyPromptContext(activeDifficulty);
+
+    const prompt = `You are a cybersecurity simulation engine.
+${diffCtx}
+
 Simulate a realistic "${attack.name}" attack (category: ${attack.category}) against a virtual machine at IP ${target.ip} running ${target.os} with services: ${target.services.join(', ')}.
 
-Generate a realistic sequence of 12-16 terminal/log lines showing:
+Generate a realistic sequence of ${activeDifficulty.params.log_count} terminal/log lines showing:
 1. Attacker-side commands and output (prefixed with "ATTACKER")
 2. Defensive firewall/IDS/SIEM log entries being triggered (prefixed with "FIREWALL", "IDS", or "SIEM")
 3. Some attacks partially succeed, some get blocked — be realistic
