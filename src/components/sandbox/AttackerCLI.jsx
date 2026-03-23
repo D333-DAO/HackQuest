@@ -424,7 +424,7 @@ Return JSON:
       </div>
 
       {/* Output area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-0.5 font-mono text-xs" style={{ minHeight: 280 }}>
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-3 space-y-0.5 font-mono text-xs" style={{ minHeight: 280 }}>
         {history.map((entry, i) => {
           if (entry.type === 'banner' || entry.type === 'output' || entry.type === 'system') {
             return (
@@ -451,7 +451,7 @@ Return JSON:
             <span className="text-muted-foreground">Simulating exploit…</span>
           </div>
         )}
-        <div ref={bottomRef} />
+
       </div>
 
       {/* Input */}
