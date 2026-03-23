@@ -4,7 +4,7 @@ import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle, Terminal, Brain, Ter
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
 import SandboxTargetSelector from '@/components/sandbox/SandboxTargetSelector';
-import SandboxAttackPanel from '@/components/sandbox/SandboxAttackPanel';
+import ScenarioLibrary from '@/components/sandbox/ScenarioLibrary';
 import SandboxTerminal from '@/components/sandbox/SandboxTerminal';
 import SandboxMetrics from '@/components/sandbox/SandboxMetrics';
 import SandboxAnalysis from '@/components/sandbox/SandboxAnalysis';
