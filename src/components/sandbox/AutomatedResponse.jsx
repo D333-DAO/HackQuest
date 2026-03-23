@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Zap, Plus, Trash2, ToggleLeft, ToggleRight, ChevronDown, ChevronUp, Shield, Lock, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
