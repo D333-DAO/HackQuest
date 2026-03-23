@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ATTACK_SCENARIOS, SCENARIO_CATEGORIES } from '@/lib/attackScenarios';
-import { Play, Loader2, Search, Shield, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { DIFFICULTY_LEVELS, DEFAULT_DIFFICULTY } from '@/lib/attackDifficulty';
+import { Play, Loader2, Search, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const SEVERITY_STYLE = {
@@ -14,12 +15,11 @@ const ALL = 'All';
 
 function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, targetMissing }) {
   const [expanded, setExpanded] = useState(false);
-  const selected = isSelected;
 
   return (
     <div
       className={`rounded-xl border transition-all duration-150 overflow-hidden ${
-        selected
+        isSelected
           ? `${scenario.bg} ${scenario.border} shadow-md`
           : 'bg-secondary/20 border-border hover:border-muted-foreground/40'
       }`}
@@ -32,7 +32,7 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
         <span className="text-xl flex-shrink-0">{scenario.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-sm font-semibold ${selected ? scenario.color : 'text-foreground'}`}>
+            <span className={`text-sm font-semibold ${isSelected ? scenario.color : 'text-foreground'}`}>
               {scenario.name}
             </span>
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${SEVERITY_STYLE[scenario.severity]}`}>
@@ -72,7 +72,7 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
             ))}
           </div>
 
-          {selected && (
+          {isSelected && (
             <Button
               size="sm"
               className="w-full gap-2 mt-1"
@@ -85,7 +85,7 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
               }
             </Button>
           )}
-          {selected && targetMissing && (
+          {isSelected && targetMissing && (
             <p className="text-[11px] text-muted-foreground text-center">Select a target VM first</p>
           )}
         </div>
@@ -94,10 +94,59 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
   );
 }
 
+// ── Difficulty Selector ────────────────────────────────────────────────────────
+function DifficultySelector({ value, onChange }) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Attack Difficulty</p>
+      <div className="grid grid-cols-3 gap-2">
+        {DIFFICULTY_LEVELS.map(d => {
+          const isActive = value.id === d.id;
+          return (
+            <button
+              key={d.id}
+              onClick={() => onChange(d)}
+              className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl border text-center transition-all ${
+                isActive
+                  ? `${d.activeBg} ${d.border} shadow-sm`
+                  : 'bg-secondary/20 border-border hover:border-muted-foreground/40'
+              }`}
+            >
+              <span className="text-lg">{d.icon}</span>
+              <span className={`text-xs font-bold ${isActive ? d.color : 'text-foreground'}`}>{d.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-[11px] text-muted-foreground leading-relaxed">{value.description}</p>
+      {/* Difficulty param chips */}
+      <div className="flex flex-wrap gap-1.5">
+        {value.params.obfuscation_steps > 0 && (
+          <span className="text-[9px] font-mono bg-secondary border border-border text-muted-foreground px-2 py-0.5 rounded-full">
+            {value.params.obfuscation_steps} obfuscation steps
+          </span>
+        )}
+        {value.params.exploit_chain_required && (
+          <span className="text-[9px] font-mono bg-secondary border border-border text-muted-foreground px-2 py-0.5 rounded-full">
+            exploit chaining
+          </span>
+        )}
+        <span className="text-[9px] font-mono bg-secondary border border-border text-muted-foreground px-2 py-0.5 rounded-full">
+          stealth: {value.params.stealth_level}
+        </span>
+        <span className="text-[9px] font-mono bg-secondary border border-border text-muted-foreground px-2 py-0.5 rounded-full">
+          detection: {value.params.detection_difficulty}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function ScenarioLibrary({ target, isRunning, currentAttack, onLaunch }) {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState(ALL);
+  const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
 
   const filtered = useMemo(() => {
     return ATTACK_SCENARIOS.filter(s => {
@@ -110,11 +159,11 @@ export default function ScenarioLibrary({ target, isRunning, currentAttack, onLa
 
   const handleLaunch = (scenario) => {
     if (!target || isRunning) return;
-    onLaunch(scenario);
+    onLaunch(scenario, difficulty);
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl flex flex-col gap-3 p-4">
+    <div className="bg-card border border-border rounded-2xl flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
           2. Choose Attack Scenario
@@ -123,6 +172,11 @@ export default function ScenarioLibrary({ target, isRunning, currentAttack, onLa
           </span>
         </h3>
       </div>
+
+      {/* Difficulty Selector */}
+      <DifficultySelector value={difficulty} onChange={setDifficulty} />
+
+      <div className="border-t border-border" />
 
       {/* Search */}
       <div className="relative">
@@ -154,7 +208,7 @@ export default function ScenarioLibrary({ target, isRunning, currentAttack, onLa
       </div>
 
       {/* Scenario list */}
-      <div className="space-y-1.5 overflow-y-auto max-h-80 pr-0.5">
+      <div className="space-y-1.5 overflow-y-auto max-h-72 pr-0.5">
         {filtered.length === 0 ? (
           <p className="text-xs text-muted-foreground text-center py-6">No scenarios match your search.</p>
         ) : (
@@ -172,22 +226,21 @@ export default function ScenarioLibrary({ target, isRunning, currentAttack, onLa
         )}
       </div>
 
-      {/* Launch button (always visible when selection made) */}
-      {selected && !selected.id /* fallback never shown — cards handle launch */ && null}
+      {/* Bottom launch button */}
       {selected && (
         <Button
-          className="w-full gap-2 mt-1 shrink-0"
+          className="w-full gap-2 shrink-0"
           disabled={!target || isRunning}
           onClick={() => handleLaunch(selected)}
         >
           {isRunning
             ? <><Loader2 className="w-4 h-4 animate-spin" /> Simulating Attack...</>
-            : <><Play className="w-4 h-4" /> Launch — {selected.name}</>
+            : <><Play className="w-4 h-4" /> Launch — {selected.name} [{difficulty.label}]</>
           }
         </Button>
       )}
       {!target && (
-        <p className="text-[11px] text-muted-foreground text-center -mt-1">Select a target VM first</p>
+        <p className="text-[11px] text-muted-foreground text-center -mt-2">Select a target VM first</p>
       )}
     </div>
   );
