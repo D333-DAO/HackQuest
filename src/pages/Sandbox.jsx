@@ -172,6 +172,7 @@ Return JSON:
             <Wifi className="w-3 h-3" />
             {isRunning ? 'ATTACK RUNNING' : 'IDLE'}
           </div>
+          <DownloadReport logs={logs} metrics={metrics} target={target} attack={currentAttack} />
           {logs.length > 0 && (
             <Button variant="outline" size="sm" onClick={saveSession} className="gap-1.5">
               <Save className="w-3.5 h-3.5" /> Save Session
