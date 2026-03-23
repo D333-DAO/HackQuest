@@ -105,7 +105,7 @@ export default function InteractiveTerminal({ target }) {
   const [cmdHistory, setCmdHistory] = useState([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
 
-  const bottomRef = useRef(null);
+
   const inputRef  = useRef(null);
 
   const scrollContainerRef = useRef(null);

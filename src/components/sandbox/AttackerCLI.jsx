@@ -187,7 +187,7 @@ export default function AttackerCLI({ target, isRunning, onLogEmit }) {
   const [cmdHistory, setCmdHistory] = useState([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
 
-  const bottomRef = useRef(null);
+
   const inputRef  = useRef(null);
 
   // Sync target into ctx

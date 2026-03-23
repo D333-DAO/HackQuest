@@ -11,7 +11,7 @@ const LOG_STYLES = {
 };
 
 export default function SandboxTerminal({ logs, isLoading }) {
-  const bottomRef = useRef(null);
+
 
   const scrollContainerRef = useRef(null);
 
