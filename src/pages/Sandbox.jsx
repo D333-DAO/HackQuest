@@ -543,6 +543,18 @@ Return JSON:
       {activeTab === 'analysis' && (
         <SandboxAnalysis logs={logs} target={target} metrics={metrics} />
       )}
+      {/* Post-simulation report modal */}
+      {showReport && currentAttack && target && (
+        <SimulationReport
+          attack={currentAttack}
+          target={target}
+          logs={logs}
+          metrics={metrics}
+          difficulty={difficulty}
+          onClose={() => setShowReport(false)}
+        />
+      )}
+
       {activeTab === 'sessions' && (
         <div className="space-y-4">
           {replaySession && (
