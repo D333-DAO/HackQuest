@@ -139,15 +139,27 @@ export default function QuizResults({ quiz, attempt, onRetry, onNext }) {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3">
-        <Button variant="outline" className="flex-1 gap-2" onClick={onRetry}>
-          <RotateCcw className="w-4 h-4" /> Retry Quiz
-        </Button>
-        {onNext && (
-          <Button className="flex-1 gap-2" onClick={onNext}>
-            Continue <ArrowRight className="w-4 h-4" />
+      <div className="flex flex-col gap-3">
+        {passed && (
+          <Button 
+            onClick={handleDownloadCertificate} 
+            disabled={isDownloading}
+            className="gap-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30"
+          >
+            {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            Download Certificate
           </Button>
         )}
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1 gap-2" onClick={onRetry}>
+            <RotateCcw className="w-4 h-4" /> Retry Quiz
+          </Button>
+          {onNext && (
+            <Button className="flex-1 gap-2" onClick={onNext}>
+              Continue <ArrowRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
