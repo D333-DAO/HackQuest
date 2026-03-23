@@ -52,6 +52,7 @@ function NavLink({ item, mobile, onClose }) {
               </Link>
             ))}
           </div>
+          </div>
         )}
       </div>
     );
