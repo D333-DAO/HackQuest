@@ -19,6 +19,7 @@ import Sandbox from './pages/Sandbox';
 import AttackSimulator from './pages/AttackSimulator';
 import ScenarioBuilder from './pages/ScenarioBuilder';
 import AttackHistory from './pages/AttackHistory';
+import MitreScenarioBuilder from './pages/MitreScenarioBuilder';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
