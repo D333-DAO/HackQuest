@@ -25,10 +25,9 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
       }`}
     >
       {/* Main row */}
-      <button
-        className="w-full text-left px-4 py-3 flex items-center gap-3"
+      <div
+        className={`w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer ${isRunning ? 'opacity-50 pointer-events-none' : ''}`}
         onClick={() => onSelect(scenario)}
-        disabled={isRunning}
       >
         <span className="text-xl flex-shrink-0">{scenario.icon}</span>
         <div className="flex-1 min-w-0">
@@ -48,7 +47,7 @@ function ScenarioCard({ scenario, isSelected, isRunning, onSelect, onLaunch, tar
         >
           {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
-      </button>
+      </div>
 
       {/* Expanded detail */}
       {expanded && (
