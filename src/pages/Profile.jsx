@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink, Lock } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import CryptoJS from 'crypto-js';
+import { useNotification } from '@/lib/NotificationContext';
 import { getEarnedBadges, getLockedBadges } from '@/lib/badgeDefinitions';
 
 function getGravatarUrl(email) {
@@ -36,6 +37,7 @@ function generateChartData(progress, rooms) {
 export default function Profile() {
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
+  const { notify } = useNotification();
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState('');
   const [isAddingLink, setIsAddingLink] = useState(false);
@@ -43,6 +45,7 @@ export default function Profile() {
   const [linkUrl, setLinkUrl] = useState('');
   const [linkError, setLinkError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [shownBadges, setShownBadges] = useState(new Set());
 
   const { data: user } = useQuery({
     queryKey: ['me'],
@@ -81,6 +84,16 @@ export default function Profile() {
   const userBio = user?.bio || '';
   const useGravatar = user?.use_gravatar !== false;
   const avatarUrl = user?.avatar_url || (useGravatar ? getGravatarUrl(user?.email) : null);
+
+  // Notify on new badge unlocks
+  useEffect(() => {
+    earnedAchievementBadges.forEach(badge => {
+      if (!shownBadges.has(badge.key)) {
+        notify.badge(badge.title);
+        setShownBadges(prev => new Set([...prev, badge.key]));
+      }
+    });
+  }, [earnedAchievementBadges, shownBadges, notify]);
 
   const updateUserMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
