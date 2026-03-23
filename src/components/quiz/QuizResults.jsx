@@ -1,7 +1,8 @@
-import React from 'react';
-import { CheckCircle2, XCircle, Trophy, RotateCcw, ArrowRight, Clock, FlaskConical, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { CheckCircle2, XCircle, Trophy, RotateCcw, ArrowRight, Clock, FlaskConical, ArrowUpRight, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
