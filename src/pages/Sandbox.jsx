@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, RotateCcw, Wifi, Shield, AlertTriangle, Terminal, Brain, TerminalSquare, Save, History, Layers } from 'lucide-react';
 import InteractiveDefense from '@/components/sandbox/InteractiveDefense';
 import AttackChain from '@/components/sandbox/AttackChain';
+import AutomatedResponse from '@/components/sandbox/AutomatedResponse';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
 import SandboxTargetSelector from '@/components/sandbox/SandboxTargetSelector';
