@@ -404,10 +404,14 @@ Return JSON matching the schema exactly.`,
               key={quiz.id}
               quiz={quiz}
               onStart={handleStart}
+              onLinkLab={setLinkingQuiz}
               bestScore={bestScoreMap[quiz.id] ?? null}
             />
           ))}
         </div>
+        {linkingQuiz && (
+          <QuizLabLinker quiz={linkingQuiz} onClose={() => setLinkingQuiz(null)} />
+        )}
       )}
     </div>
   );
