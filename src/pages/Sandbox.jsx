@@ -16,6 +16,7 @@ import InteractiveTerminal from '@/components/sandbox/InteractiveTerminal';
 import SessionReplay from '@/components/sandbox/SessionReplay';
 import SavedSessions from '@/components/sandbox/SavedSessions';
 import DownloadReport from '@/components/sandbox/DownloadReport';
+import SimulationReport from '@/components/sandbox/SimulationReport';
 import { base44 } from '@/api/base44Client';
 import { applyAttackMetrics, setActiveAttack, resetNetwork } from '@/lib/networkStore';
 import { ATTACK_SCENARIOS } from '@/lib/attackScenarios';
