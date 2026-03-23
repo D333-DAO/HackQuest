@@ -158,10 +158,11 @@ Simulation logs (last 60 lines):
 ${logSample}
 
 Generate a comprehensive report with:
-1. 2-4 specific vulnerabilities that were exploited or probed in this simulation (with real CVE IDs where applicable)
-2. 3-5 MITRE ATT&CK techniques observed (use real technique IDs like T1190, T1059, etc.)
-3. 4-6 specific remediation steps tailored to the target OS and services
-4. An overall risk score from 1-10 and a one-paragraph executive summary
+1. 2-4 specific vulnerabilities exploited or probed (with real CVE IDs where applicable)
+2. 3-5 MITRE ATT&CK techniques observed (use real IDs like T1190, T1059)
+3. 4-6 remediation steps tailored to the target OS and services
+4. Risk score 1-10 and a one-paragraph executive summary
+5. 4-6 one-click suggested fixes: a mix of firewall_rule, patch, and config_change types. Each must be directly relevant to this specific attack and target. Include a real CLI command where applicable.
 
 Return JSON matching the schema exactly.`,
       response_json_schema: {
@@ -200,6 +201,18 @@ Return JSON matching the schema exactly.`,
                 action: { type: 'string' },
                 detail: { type: 'string' },
                 priority: { type: 'string' },
+              }
+            }
+          },
+          suggested_fixes: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                type: { type: 'string' },
+                label: { type: 'string' },
+                description: { type: 'string' },
+                command: { type: 'string' },
               }
             }
           }
