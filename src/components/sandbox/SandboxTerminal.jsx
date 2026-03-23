@@ -43,7 +43,7 @@ export default function SandboxTerminal({ logs, isLoading }) {
       </div>
 
       {/* Log output */}
-      <div className="flex-1 overflow-y-auto p-3 font-mono text-xs space-y-0.5">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-3 font-mono text-xs space-y-0.5">
         {logs.length === 0 ? (
           <div className="flex items-center justify-center h-full py-8">
             <p className="text-muted-foreground text-xs">Launch an attack to see real-time logs...</p>
@@ -60,7 +60,7 @@ export default function SandboxTerminal({ logs, isLoading }) {
             );
           })
         )}
-        <div ref={bottomRef} />
+
       </div>
     </div>
   );
