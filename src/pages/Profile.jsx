@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink } from 'lucide-react';
+import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import CryptoJS from 'crypto-js';
+import { getEarnedBadges, getLockedBadges } from '@/lib/badgeDefinitions';
 
 function getGravatarUrl(email) {
   const hash = CryptoJS.MD5(email.toLowerCase()).toString();
@@ -67,7 +68,13 @@ export default function Profile() {
   const totalPoints = progress.reduce((sum, p) => sum + (p.points_earned || 0), 0);
   const completedRooms = progress.filter(p => p.completed).length;
   const completedRoomIds = new Set(progress.filter(p => p.completed).map(p => p.room_id));
-  const earnedBadges = badges.filter(b => totalPoints >= (b.points_required || 0));
+  
+  // Get achievement-based badges
+  const earnedAchievementBadges = getEarnedBadges(progress, rooms);
+  const lockedAchievementBadges = getLockedBadges(progress, rooms);
+  
+  // Legacy points-based badges
+  const earnedPointBadges = badges.filter(b => totalPoints >= (b.points_required || 0));
 
   const chartData = generateChartData(progress, rooms);
   const userLinks = user?.links || [];
@@ -370,35 +377,62 @@ export default function Profile() {
 
       {/* Badges */}
       <div className="bg-card border border-border rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Badges</h2>
-        {earnedBadges.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No badges earned yet. Keep hacking!</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-            {earnedBadges.map(badge => (
-              <div key={badge.id} className="p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
-                <span className="text-3xl">{badge.icon || '🏅'}</span>
-                <p className="text-sm font-semibold text-foreground mt-2">{badge.title}</p>
-                <p className="text-[10px] text-muted-foreground">{badge.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Locked badges */}
-        {badges.filter(b => totalPoints < (b.points_required || 0)).length > 0 && (
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Locked</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {badges.filter(b => totalPoints < (b.points_required || 0)).map(badge => (
-                <div key={badge.id} className="p-4 rounded-xl bg-secondary/50 border border-border text-center opacity-50">
-                  <span className="text-3xl grayscale">🔒</span>
-                  <p className="text-sm font-semibold text-foreground mt-2">{badge.title}</p>
-                  <p className="text-[10px] text-muted-foreground">{badge.points_required} pts needed</p>
+        <h2 className="text-lg font-semibold text-foreground mb-6">Achievements</h2>
+        
+        {/* Earned Achievement Badges */}
+        {earnedAchievementBadges.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm font-medium text-primary mb-3">Unlocked ({earnedAchievementBadges.length})</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {earnedAchievementBadges.map(badge => (
+                <div key={badge.key} className="p-4 rounded-xl bg-primary/10 border border-primary/30 text-center hover:border-primary/50 transition-colors group">
+                  <span className="text-4xl group-hover:scale-110 transition-transform inline-block">{badge.icon}</span>
+                  <p className="text-xs font-bold text-foreground mt-2 leading-tight">{badge.title}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{badge.description}</p>
                 </div>
               ))}
             </div>
           </div>
+        )}
+
+        {/* Locked Achievement Badges */}
+        {lockedAchievementBadges.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm font-medium text-muted-foreground mb-3">Locked ({lockedAchievementBadges.length})</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {lockedAchievementBadges.map(badge => (
+                <div key={badge.key} className="p-4 rounded-xl bg-secondary/30 border border-border text-center opacity-50">
+                  <div className="text-4xl relative">
+                    <span className="grayscale inline-block">{badge.icon}</span>
+                    <Lock className="w-4 h-4 absolute bottom-0 right-0 text-muted-foreground" />
+                  </div>
+                  <p className="text-xs font-bold text-foreground mt-2 leading-tight">{badge.title}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{badge.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Legacy Points-Based Badges */}
+        {earnedPointBadges.length > 0 && (
+          <div className="pt-6 border-t border-border">
+            <h3 className="text-sm font-medium text-foreground mb-3">Point Milestones</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {earnedPointBadges.map(badge => (
+                <div key={badge.id} className="p-4 rounded-xl bg-accent/10 border border-accent/30 text-center">
+                  <span className="text-3xl">{badge.icon || '🏅'}</span>
+                  <p className="text-xs font-bold text-foreground mt-2">{badge.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{badge.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {earnedAchievementBadges.length === 0 && earnedPointBadges.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-8">No badges earned yet. Complete rooms and milestones to unlock achievements!</p>
         )}
       </div>
     </div>
