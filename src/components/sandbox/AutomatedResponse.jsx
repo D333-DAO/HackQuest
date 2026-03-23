@@ -223,8 +223,8 @@ export default function AutomatedResponse({ logs, isRunning, onPlaybookFired }) 
   const [firedLog, setFiredLog] = useState([]);
 
   // Check incoming logs against enabled playbooks
-  const lastCheckedRef = React.useRef(0);
-  React.useEffect(() => {
+  const lastCheckedRef = useRef(0);
+  useEffect(() => {
     if (!isRunning || logs.length === 0) return;
     const newLogs = logs.slice(lastCheckedRef.current);
     lastCheckedRef.current = logs.length;
