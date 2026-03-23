@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Shield, Wifi, X, AlertTriangle, ShieldCheck, Flame, Zap, Lock, Server, Globe, Monitor, Cpu, Router } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Wifi, X, AlertTriangle, ShieldCheck, Flame, Zap } from 'lucide-react';
 import { getNetworkNodes, getNetworkEdges, getNetworkState, subscribeToNetwork } from '@/lib/networkStore';
 
 // ── Node visual config ────────────────────────────────────────────────────────
