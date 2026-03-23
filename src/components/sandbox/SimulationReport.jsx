@@ -306,6 +306,31 @@ Return JSON matching the schema exactly.`,
                 </div>
               </Section>
 
+              {/* One-click Suggested Fixes */}
+              {(report.suggested_fixes || []).length > 0 && (
+                <Section icon={Shield} title="One-Click Suggested Fixes" color="text-cyan-400" defaultOpen={true}>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground">
+                      Apply these targeted fixes directly to the simulation's defense layer. {onApplyFix ? 'Changes will reflect in Interactive Defense.' : ''}
+                    </p>
+                    {(report.suggested_fixes || []).map((fix, i) => (
+                      <SuggestedFixCard
+                        key={i}
+                        fix={fix}
+                        applied={appliedFixes.includes(fix.label)}
+                        onApply={handleApplyFix}
+                      />
+                    ))}
+                    {appliedFixes.length > 0 && (
+                      <div className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-3 py-2 text-xs text-primary mt-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                        {appliedFixes.length} fix{appliedFixes.length > 1 ? 'es' : ''} applied to the simulation environment.
+                      </div>
+                    )}
+                  </div>
+                </Section>
+              )}
+
               {/* Remediations */}
               <Section icon={Wrench} title="Remediation Recommendations" color="text-primary">
                 {(report.remediations || []).map((r, i) => <RemediationCard key={i} item={r} index={i} />)}
