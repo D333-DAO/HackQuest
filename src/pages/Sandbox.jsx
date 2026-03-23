@@ -41,6 +41,7 @@ export default function Sandbox({ roomContext }) {
   const [campaignStageStatuses, setCampaignStageStatuses] = useState([]);
   const [isCampaignRunning, setIsCampaignRunning] = useState(false);
   const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
+  const [showReport, setShowReport] = useState(false);
   const pendingLogsRef = useRef([]);
   const pendingMetricsRef = useRef(null);
   const intervalRef = useRef(null);
