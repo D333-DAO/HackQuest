@@ -81,6 +81,7 @@ export default function Sandbox({ roomContext }) {
     setAppliedDefenses({ patches: [], rules: [] });
     setCampaignStageStatuses([]);
     setIsCampaignRunning(false);
+    setShowReport(false);
     pendingLogsRef.current = [];
     pendingMetricsRef.current = null;
     resetNetwork();
