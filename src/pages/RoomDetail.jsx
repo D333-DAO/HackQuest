@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import TerminalEmulator from '@/components/terminal/TerminalEmulator';
+import RoomComments from '@/components/room/RoomComments';
 
 const diffColors = {
   easy: 'bg-primary/10 text-primary border-primary/20',
@@ -215,6 +216,9 @@ export default function RoomDetail() {
           </div>
         )}
       </div>
+
+      {/* Comments section */}
+      <RoomComments roomId={roomId} />
     </div>
   );
 }
