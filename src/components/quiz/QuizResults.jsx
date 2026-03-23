@@ -11,12 +11,38 @@ function formatTime(seconds) {
 }
 
 export default function QuizResults({ quiz, attempt, onRetry, onNext }) {
+  const [isDownloading, setIsDownloading] = useState(false);
   const passed = attempt.passed;
   const pct = Math.round(attempt.score);
   const correctCount = attempt.answers.filter(a => a.correct).length;
   const total = attempt.answers.length;
 
   const showLabSuggestion = !passed && quiz.linked_room_id;
+
+  const handleDownloadCertificate = async () => {
+    setIsDownloading(true);
+    try {
+      const response = await base44.functions.invoke('generateCertificate', {
+        quiz_title: quiz.title,
+        score: attempt.score,
+        attempt_date: attempt.created_date,
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Certificate_${quiz.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Failed to download certificate:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div className="space-y-6 text-center">
