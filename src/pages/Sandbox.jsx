@@ -24,7 +24,32 @@ export default function Sandbox({ roomContext }) {
   const [currentAttack, setCurrentAttack] = useState(null);
   const [isLoadingAttack, setIsLoadingAttack] = useState(false);
   const [activeTab, setActiveTab] = useState('simulation');
+  const [savedSessions, setSavedSessions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('sandbox_sessions') || '[]'); } catch { return []; }
+  });
+  const [replaySession, setReplaySession] = useState(null);
   const intervalRef = useRef(null);
+
+  const persistSessions = (sessions) => {
+    setSavedSessions(sessions);
+    localStorage.setItem('sandbox_sessions', JSON.stringify(sessions));
+  };
+
+  const saveSession = () => {
+    if (logs.length === 0) return;
+    const session = {
+      attack: currentAttack,
+      target,
+      logs,
+      metrics,
+      savedAt: new Date().toISOString(),
+    };
+    persistSessions([session, ...savedSessions].slice(0, 20));
+  };
+
+  const deleteSession = (idx) => {
+    persistSessions(savedSessions.filter((_, i) => i !== idx));
+  };
 
   const appendLog = (entries) => {
     setLogs(prev => [...prev, ...entries].slice(-200));
