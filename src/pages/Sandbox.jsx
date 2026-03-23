@@ -39,6 +39,7 @@ export default function Sandbox({ roomContext }) {
   const [appliedDefenses, setAppliedDefenses] = useState({ patches: [], rules: [] });
   const [campaignStageStatuses, setCampaignStageStatuses] = useState([]);
   const [isCampaignRunning, setIsCampaignRunning] = useState(false);
+  const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
   const pendingLogsRef = useRef([]);
   const pendingMetricsRef = useRef(null);
   const intervalRef = useRef(null);
