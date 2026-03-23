@@ -21,6 +21,7 @@ import ScenarioBuilder from './pages/ScenarioBuilder';
 import AttackHistory from './pages/AttackHistory';
 import MitreScenarioBuilder from './pages/MitreScenarioBuilder';
 import QuizEngine from './pages/QuizEngine';
+import SavedQuizzes from './pages/SavedQuizzes';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
