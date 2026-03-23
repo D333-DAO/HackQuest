@@ -385,6 +385,11 @@ export default function SandboxTopology({ target, onSelectTarget, isRunning, cur
                 style={{ cursor: isSelectable || n.id !== 'internet' ? 'pointer' : 'default' }}
                 onClick={e => {
                   e.stopPropagation();
+                  if (isSelectable) {
+                    // Single click on a selectable target sets it directly
+                    const t = SANDBOX_TARGETS[n.id];
+                    if (t) onSelectTarget({ id: n.id, ...t });
+                  }
                   setSelectedNode(prev => (prev === n.id ? null : n.id));
                 }}
                 filter={(hasStatus || isSelected || isTargeted) ? `url(#gf-${n.id})` : undefined}
