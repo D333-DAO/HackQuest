@@ -12,6 +12,7 @@ const NAV_ITEMS = [
     { label: 'Attack Simulator',path: '/AttackSimulator',   icon: Zap },
     { label: 'Scenario Builder',path: '/ScenarioBuilder',   icon: Wrench },
     { label: 'Attack History',  path: '/AttackHistory',     icon: History },
+    { label: 'MITRE Builder',   path: '/MitreScenarioBuilder', icon: Swords },
   ]},
   { label: 'Leaderboard',     path: '/Leaderboard',       icon: Trophy },
 ];
