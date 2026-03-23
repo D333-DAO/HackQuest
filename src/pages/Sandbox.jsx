@@ -248,7 +248,6 @@ Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", 
 
     setIsLoadingAttack(false);
 
-    const outcomeColors = { success: 'firewall', partial: 'ids', failed: 'attacker' };
     const outcomeType = result.mitigation_outcome || 'partial';
 
     appendLog([{
