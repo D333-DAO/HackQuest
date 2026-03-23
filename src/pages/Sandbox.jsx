@@ -165,7 +165,7 @@ Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", 
       }]);
 
       setIsLoadingAttack(true);
-      const { summary, outcome } = await runSingleStage(attack, priorContext);
+      const { summary, outcome } = await runSingleStage(attack, priorContext, difficulty);
       setIsLoadingAttack(false);
 
       priorContext.push(`${attack.name} → ${summary}`);
