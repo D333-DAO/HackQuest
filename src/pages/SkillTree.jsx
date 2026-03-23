@@ -286,10 +286,10 @@ export default function SkillTree() {
                 {expandedDomain !== domain.id && (
                   <div className="flex items-center gap-2 pb-1">
                     {domain.tiers.map((node, idx) => {
-                      const unlocked = isUnlocked(node);
-                      const complete = isComplete(node);
-                      return (
-                        <React.Fragment key={node.id}>
+                       const unlocked = isUnlocked(node);
+                       const complete = isComplete(node);
+                       return (
+                         <div key={node.id} className="flex items-center gap-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); setExpandedDomain(domain.id); setSelectedNode(node.id); }}
                             className="flex flex-col items-center gap-1 group"
