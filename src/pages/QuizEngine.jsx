@@ -136,6 +136,16 @@ export default function QuizEngine() {
     enabled: !!user,
   });
 
+  const { data: bookmarks = [] } = useQuery({
+    queryKey: ['quizBookmarks', user?.email],
+    queryFn: () => user ? base44.entities.QuizBookmark.filter({ user_email: user.email }) : [],
+    enabled: !!user,
+  });
+
+  const bookmarkSet = React.useMemo(() => {
+    return new Set(bookmarks.map(b => b.quiz_id));
+  }, [bookmarks]);
+
   const saveMutation = useMutation({
     mutationFn: (data) => base44.entities.QuizAttempt.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['quiz_attempts'] }),
