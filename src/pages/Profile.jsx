@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import md5 from 'crypto-js/md5';
+import CryptoJS from 'crypto-js';
 
 function getGravatarUrl(email) {
-  const hash = md5(email.toLowerCase()).toString();
+  const hash = CryptoJS.MD5(email.toLowerCase()).toString();
   return `https://www.gravatar.com/avatar/${hash}?d=identicon&s=200`;
 }
 
