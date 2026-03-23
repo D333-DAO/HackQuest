@@ -137,6 +137,7 @@ function SuggestedFixCard({ fix, applied, onApply }) {
 export default function SimulationReport({ attack, target, logs, metrics, difficulty, onClose, onApplyFix }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [appliedFixes, setAppliedFixes] = useState([]);
 
   useEffect(() => {
     generateReport();
