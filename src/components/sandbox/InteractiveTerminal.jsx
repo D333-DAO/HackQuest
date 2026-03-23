@@ -284,7 +284,7 @@ Return JSON:
       </div>
 
       {/* Output area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-1 font-mono text-xs" style={{ minHeight: 320 }}>
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-1 font-mono text-xs" style={{ minHeight: 320 }}>
         {history.map((entry, i) => {
           if (entry.type === 'banner' || entry.type === 'output' || entry.type === 'system') {
             return (
@@ -312,7 +312,7 @@ Return JSON:
           </div>
         )}
 
-        <div ref={bottomRef} />
+
       </div>
 
       {/* Input row */}
