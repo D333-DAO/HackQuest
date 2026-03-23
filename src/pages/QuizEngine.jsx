@@ -24,7 +24,7 @@ function shuffle(arr) {
   return a;
 }
 
-function QuizCard({ quiz, onStart, onLinkLab, bestScore }) {
+function QuizCard({ quiz, onStart, onLinkLab, bestScore, user = null, isBookmarked = false }) {
   const diff = DIFF_STYLE[quiz.difficulty] || DIFF_STYLE.medium;
   return (
     <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-4 hover:border-primary/30 transition-colors">
@@ -32,9 +32,12 @@ function QuizCard({ quiz, onStart, onLinkLab, bestScore }) {
         <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
           <Brain className="w-5 h-5 text-primary" />
         </div>
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${diff.bg} ${diff.color}`}>
-          {quiz.difficulty}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${diff.bg} ${diff.color}`}>
+            {quiz.difficulty}
+          </span>
+          {user && <QuizBookmarkButton quiz={quiz} user={user} isBookmarked={isBookmarked} />}
+        </div>
       </div>
       <div>
         <h3 className="text-sm font-bold text-foreground">{quiz.title}</h3>
