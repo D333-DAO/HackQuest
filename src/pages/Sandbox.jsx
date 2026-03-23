@@ -471,6 +471,18 @@ Return JSON:
               appliedDefenses={appliedDefenses}
               onApply={handleApplyDefense}
             />
+            <AutomatedResponse
+              logs={logs}
+              isRunning={isRunning}
+              onPlaybookFired={(pb) => {
+                appendLog([{
+                  time: new Date().toISOString(),
+                  type: 'firewall',
+                  source: 'AUTO-RESPONSE',
+                  message: `⚡ Playbook "${pb.name}" triggered → executing: ${pb.actions.join(', ')}`,
+                }]);
+              }}
+            />
             <SandboxAlertChart metrics={metrics} />
           </div>
         </div>
