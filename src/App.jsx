@@ -65,6 +65,7 @@ const AuthenticatedApp = () => {
         <Route path="/AttackHistory" element={<AttackHistory />} />
         <Route path="/MitreScenarioBuilder" element={<MitreScenarioBuilder />} />
         <Route path="/QuizEngine" element={<QuizEngine />} />
+        <Route path="/SavedQuizzes" element={<SavedQuizzes />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
