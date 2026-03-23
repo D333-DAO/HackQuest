@@ -93,7 +93,48 @@ function RemediationCard({ item, index }) {
   );
 }
 
-export default function SimulationReport({ attack, target, logs, metrics, difficulty, onClose }) {
+const FIX_TYPE_STYLE = {
+  firewall_rule:  { icon: Flame,    color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+  patch:          { icon: Shield,   color: 'text-primary',    bg: 'bg-primary/10 border-primary/20' },
+  config_change:  { icon: Settings, color: 'text-cyan-400',   bg: 'bg-cyan-500/10 border-cyan-500/20' },
+};
+
+function SuggestedFixCard({ fix, applied, onApply }) {
+  const style = FIX_TYPE_STYLE[fix.type] || FIX_TYPE_STYLE.config_change;
+  const Icon = style.icon;
+  return (
+    <div className={`flex items-start gap-3 rounded-xl border p-3 transition-all ${applied ? 'bg-primary/5 border-primary/25 opacity-70' : 'bg-secondary/20 border-border'}`}>
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 border ${style.bg}`}>
+        <Icon className={`w-3.5 h-3.5 ${style.color}`} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+          <span className="text-sm font-semibold text-foreground">{fix.label}</span>
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase ${style.bg} ${style.color}`}>
+            {fix.type.replace('_', ' ')}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed mb-1.5">{fix.description}</p>
+        {fix.command && (
+          <code className="text-[10px] font-mono bg-secondary border border-border text-muted-foreground px-2 py-1 rounded-md block break-all">{fix.command}</code>
+        )}
+      </div>
+      <button
+        onClick={() => !applied && onApply(fix)}
+        disabled={applied}
+        className={`flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all ${
+          applied
+            ? 'bg-primary/10 border-primary/20 text-primary cursor-default'
+            : 'bg-secondary border-border text-muted-foreground hover:bg-primary/10 hover:border-primary/30 hover:text-primary'
+        }`}
+      >
+        {applied ? <><CheckCircle2 className="w-3 h-3" /> Applied</> : <><Plus className="w-3 h-3" /> Apply</>}
+      </button>
+    </div>
+  );
+}
+
+export default function SimulationReport({ attack, target, logs, metrics, difficulty, onClose, onApplyFix }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
 
