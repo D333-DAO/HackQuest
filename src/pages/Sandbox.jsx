@@ -474,6 +474,17 @@ Return JSON:
           </div>
         </div>
       )}
+      {activeTab === 'campaign' && (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <AttackChain
+            target={target}
+            isRunning={isCampaignRunning}
+            stageStatuses={campaignStageStatuses}
+            onRunChain={handleRunChain}
+          />
+          <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
+        </div>
+      )}
       {activeTab === 'terminal' && (
         <InteractiveTerminal target={target} />
       )}
