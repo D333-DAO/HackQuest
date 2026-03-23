@@ -13,8 +13,11 @@ const LOG_STYLES = {
 export default function SandboxTerminal({ logs, isLoading }) {
   const bottomRef = useRef(null);
 
+  const scrollContainerRef = useRef(null);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [logs]);
 
   const formatTime = (iso) => {

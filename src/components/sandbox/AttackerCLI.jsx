@@ -203,8 +203,11 @@ export default function AttackerCLI({ target, isRunning, onLogEmit }) {
     });
   }, [target?.id]);
 
+  const scrollContainerRef = useRef(null);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [history]);
 
   const appendHistory = (entry) => setHistory(prev => [...prev, entry]);

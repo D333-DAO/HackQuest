@@ -108,8 +108,11 @@ export default function InteractiveTerminal({ target }) {
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
 
+  const scrollContainerRef = useRef(null);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [history]);
 
   useEffect(() => {
