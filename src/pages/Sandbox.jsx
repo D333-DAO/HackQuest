@@ -494,6 +494,30 @@ Return JSON:
           </div>
         </div>
       )}
+      {activeTab === 'attacker' && (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <AttackerCLI
+            target={target}
+            isRunning={isRunning}
+            onLogEmit={(log) => appendLog([log])}
+          />
+          <div className="flex flex-col gap-4">
+            <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
+            <AutomatedResponse
+              logs={logs}
+              isRunning={isRunning}
+              onPlaybookFired={(pb) => {
+                appendLog([{
+                  time: new Date().toISOString(),
+                  type: 'firewall',
+                  source: 'AUTO-RESPONSE',
+                  message: `⚡ Playbook "${pb.name}" triggered → executing: ${pb.actions.join(', ')}`,
+                }]);
+              }}
+            />
+          </div>
+        </div>
+      )}
       {activeTab === 'campaign' && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <AttackChain
