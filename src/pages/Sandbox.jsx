@@ -187,7 +187,7 @@ Return JSON:
       {/* Target + Attack selection */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <SandboxTargetSelector target={target} onSelect={setTarget} />
-        <SandboxAttackPanel
+        <ScenarioLibrary
           target={target}
           isRunning={isRunning || isLoadingAttack}
           currentAttack={currentAttack}
