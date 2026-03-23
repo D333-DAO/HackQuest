@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import QuizQuestion from '@/components/quiz/QuizQuestion';
 import QuizResults from '@/components/quiz/QuizResults';
 import QuizLabLinker from '@/components/quiz/QuizLabLinker';
+import QuizBookmarkButton from '@/components/quiz/QuizBookmarkButton';
 
 const DIFF_STYLE = {
   easy:   { color: 'text-primary',    bg: 'bg-primary/10 border-primary/20' },
