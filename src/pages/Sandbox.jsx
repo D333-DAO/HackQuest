@@ -16,6 +16,7 @@ import SavedSessions from '@/components/sandbox/SavedSessions';
 import DownloadReport from '@/components/sandbox/DownloadReport';
 import { base44 } from '@/api/base44Client';
 import { applyAttackMetrics, setActiveAttack, resetNetwork } from '@/lib/networkStore';
+import { ATTACK_SCENARIOS } from '@/lib/attackScenarios';
 
 const INITIAL_METRICS = { blocked: 0, detected: 0, connections: 0, alerts: [] };
 
