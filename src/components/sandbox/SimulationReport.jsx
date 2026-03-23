@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { X, Loader2, ShieldAlert, Target, Wrench, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, ExternalLink } from 'lucide-react';
+import { X, Loader2, ShieldAlert, Target, Wrench, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, ExternalLink, Flame, Shield, Settings, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const SEVERITY_STYLE = {
