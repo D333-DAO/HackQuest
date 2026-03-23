@@ -351,7 +351,7 @@ export default function SkillTree() {
                               />
                             </div>
                           )}
-                        </React.Fragment>
+                          </div>
                       );
                     })}
                   </div>
