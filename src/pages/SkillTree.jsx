@@ -149,7 +149,7 @@ export default function SkillTree() {
   const selectedNodeData = selectedDomain?.tiers.find(t => t.id === selectedNode);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-10">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 min-h-screen">
 
       {/* ── Hero Header ── */}
       <div className="relative bg-card border border-border rounded-2xl overflow-hidden px-6 py-5">
