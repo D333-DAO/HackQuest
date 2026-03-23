@@ -224,6 +224,16 @@ Return JSON matching the schema exactly.`,
     setLoading(false);
   };
 
+  const handleApplyFix = (fix) => {
+    setAppliedFixes(prev => [...prev, fix.label]);
+    if (!onApplyFix) return;
+    if (fix.type === 'firewall_rule') {
+      onApplyFix({ type: 'rule', value: fix.label });
+    } else {
+      onApplyFix({ type: 'patch', value: { id: fix.label, label: fix.label, icon: fix.type === 'patch' ? '⚙️' : '🔧', desc: fix.description } });
+    }
+  };
+
   const riskColor = report
     ? report.risk_score >= 8 ? 'text-red-400' : report.risk_score >= 5 ? 'text-amber-400' : 'text-primary'
     : 'text-muted-foreground';
