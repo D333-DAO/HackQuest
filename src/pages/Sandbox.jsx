@@ -407,16 +407,21 @@ Return JSON:
         </div>
       </div>
 
-      {/* Target + Attack selection */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <SandboxTargetSelector target={target} onSelect={setTarget} />
-        <ScenarioLibrary
-          target={target}
-          isRunning={isRunning || isLoadingAttack}
-          currentAttack={currentAttack}
-          onLaunch={handleLaunchAttack}
-        />
-      </div>
+      {/* Interactive topology map */}
+      <SandboxTopology
+        target={target}
+        onSelectTarget={setTarget}
+        isRunning={isRunning || isLoadingAttack}
+        currentAttack={currentAttack}
+      />
+
+      {/* Scenario selection */}
+      <ScenarioLibrary
+        target={target}
+        isRunning={isRunning || isLoadingAttack}
+        currentAttack={currentAttack}
+        onLaunch={handleLaunchAttack}
+      />
 
       {/* Metrics */}
       <SandboxMetrics metrics={metrics} />
