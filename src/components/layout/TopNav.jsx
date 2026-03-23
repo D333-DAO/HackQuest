@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Flame, Trophy, Search, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown } from 'lucide-react';
+import { Shield, Flame, Trophy, Search, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords } from 'lucide-react';
 
 const NAV_ITEMS = [
   { label: 'Dashboard',       path: '/Dashboard',        icon: LayoutDashboard },
