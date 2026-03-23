@@ -372,6 +372,7 @@ Return JSON:
           }));
           applyAttackMetrics(target.id, m, attack.name);
           setIsRunning(false);
+          setShowReport(true);
         }
       }, i * 350);
     });
