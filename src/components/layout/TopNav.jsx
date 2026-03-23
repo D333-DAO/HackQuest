@@ -16,6 +16,7 @@ const NAV_ITEMS = [
     { label: 'Quiz Engine',     path: '/QuizEngine',            icon: Brain },
   ]},
   { label: 'Saved Spot',      path: '/SavedQuizzes',      icon: Bookmark },
+  { label: 'Community',       path: '/Community',         icon: MessageSquare },
   { label: 'Leaderboard',     path: '/Leaderboard',       icon: Trophy },
 ];
 
