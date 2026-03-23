@@ -429,10 +429,16 @@ Return JSON:
           <Terminal className="w-4 h-4" /> Simulation
         </button>
         <button
+          onClick={() => setActiveTab('attacker')}
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'attacker' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <TerminalSquare className="w-4 h-4" /> Attacker CLI
+        </button>
+        <button
           onClick={() => setActiveTab('terminal')}
           className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'terminal' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
         >
-          <TerminalSquare className="w-4 h-4" /> Interactive Terminal
+          <TerminalSquare className="w-4 h-4" /> Lab Terminal
         </button>
         <button
           onClick={() => setActiveTab('analysis')}
