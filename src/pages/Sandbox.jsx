@@ -171,6 +171,11 @@ Return JSON:
             <Wifi className="w-3 h-3" />
             {isRunning ? 'ATTACK RUNNING' : 'IDLE'}
           </div>
+          {logs.length > 0 && (
+            <Button variant="outline" size="sm" onClick={saveSession} className="gap-1.5">
+              <Save className="w-3.5 h-3.5" /> Save Session
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={reset} className="gap-1.5">
             <RotateCcw className="w-3.5 h-3.5" /> Reset
           </Button>
