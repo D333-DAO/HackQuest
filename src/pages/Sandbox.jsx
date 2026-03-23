@@ -243,6 +243,21 @@ Return JSON:
       {activeTab === 'analysis' && (
         <SandboxAnalysis logs={logs} target={target} metrics={metrics} />
       )}
+      {activeTab === 'sessions' && (
+        <div className="space-y-4">
+          {replaySession && (
+            <SessionReplay
+              session={replaySession}
+              onClose={() => setReplaySession(null)}
+            />
+          )}
+          <SavedSessions
+            sessions={savedSessions}
+            onReplay={(s) => { setReplaySession(s); }}
+            onDelete={deleteSession}
+          />
+        </div>
+      )}
     </div>
   );
 }
