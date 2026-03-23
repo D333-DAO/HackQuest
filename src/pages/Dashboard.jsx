@@ -38,7 +38,7 @@ export default function Dashboard() {
   const isLoading      = loadingProgress || loadingRooms || loadingPaths;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* User Banner */}
       {isLoading ? (
         <Skeleton className="h-28 rounded-2xl" />
