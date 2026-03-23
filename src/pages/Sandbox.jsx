@@ -552,6 +552,7 @@ Return JSON:
           metrics={metrics}
           difficulty={difficulty}
           onClose={() => setShowReport(false)}
+          onApplyFix={handleApplyDefense}
         />
       )}
 
