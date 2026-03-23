@@ -13,6 +13,7 @@ const NAV_ITEMS = [
     { label: 'Scenario Builder',path: '/ScenarioBuilder',   icon: Wrench },
     { label: 'Attack History',  path: '/AttackHistory',     icon: History },
     { label: 'MITRE Builder',   path: '/MitreScenarioBuilder', icon: Swords },
+    { label: 'Quiz Engine',     path: '/QuizEngine',            icon: Brain },
   ]},
   { label: 'Leaderboard',     path: '/Leaderboard',       icon: Trophy },
 ];
