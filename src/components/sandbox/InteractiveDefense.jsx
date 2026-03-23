@@ -84,6 +84,7 @@ export default function InteractiveDefense({ isPaused, onPause, onResume, applie
                 size="sm"
                 onClick={onPause}
                 className="gap-2 border-amber-500/40 text-amber-400 hover:bg-amber-500/10 flex-1"
+                title="Click during an active attack to pause and configure defenses"
               >
                 <ShieldOff className="w-4 h-4" />
                 Pause & Defend
