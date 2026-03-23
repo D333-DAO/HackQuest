@@ -329,11 +329,11 @@ export default function SkillTree() {
                 {expandedDomain === domain.id && (
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 mt-2">
                     {domain.tiers.map((node, idx) => {
-                      const unlocked = isUnlocked(node);
-                      const complete = isComplete(node);
-                      const stats    = nodeStats[node.id] || { total: 0, completed: 0, rooms: [] };
-                      return (
-                        <React.Fragment key={node.id}>
+                       const unlocked = isUnlocked(node);
+                       const complete = isComplete(node);
+                       const stats    = nodeStats[node.id] || { total: 0, completed: 0, rooms: [] };
+                       return (
+                         <div key={node.id} className="flex flex-col items-stretch">
                           <SkillNode
                             node={node}
                             unlocked={unlocked}
