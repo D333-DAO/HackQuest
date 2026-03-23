@@ -84,15 +84,19 @@ export default function Sandbox({ roomContext }) {
     resetNetwork();
   };
 
-  const runSingleStage = (attack, priorContext) => new Promise((resolve) => {
+  const runSingleStage = (attack, priorContext, stageDifficulty) => new Promise((resolve) => {
     const contextNote = priorContext.length > 0
       ? `\n\nPRIOR CAMPAIGN CONTEXT (earlier stages already executed):\n${priorContext.map((s, i) => `Stage ${i + 1}: ${s}`).join('\n')}\nThe attacker has already gained some foothold. Make this stage feel like a natural continuation.`
       : '';
 
+    const diffCtx = buildDifficultyPromptContext(stageDifficulty || difficulty);
+
     const prompt = `You are a cybersecurity simulation engine.
+${diffCtx}
+
 Simulate a realistic "${attack.name}" attack (category: ${attack.category}) against ${target.ip} (${target.name}, OS: ${target.os}, services: ${target.services.join(', ')}).${contextNote}
 
-Generate 10-14 log lines (attacker commands + firewall/IDS/SIEM responses). Be realistic — some attempts blocked, some succeed.
+Generate ${stageDifficulty?.params?.log_count || difficulty.params.log_count} log lines (attacker commands + firewall/IDS/SIEM responses). Adjust noise, obfuscation, and detection accuracy to match the difficulty above.
 
 Return JSON: { "lines": [{ "type": "attacker"|"firewall"|"ids"|"siem"|"system", "message": "..." }], "metrics": { "blocked_count": number, "detected_count": number, "connections_attempted": number, "alert_level": "low"|"medium"|"high"|"critical" }, "stage_outcome": "success"|"partial"|"blocked", "stage_summary": "one-sentence outcome" }`;
 
