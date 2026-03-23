@@ -409,9 +409,10 @@ Return JSON matching the schema exactly.`,
             />
           ))}
         </div>
-        {linkingQuiz && (
-          <QuizLabLinker quiz={linkingQuiz} onClose={() => setLinkingQuiz(null)} />
-        )}
+      )}
+
+      {linkingQuiz && (
+        <QuizLabLinker quiz={linkingQuiz} onClose={() => setLinkingQuiz(null)} />
       )}
     </div>
   );
