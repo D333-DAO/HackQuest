@@ -114,6 +114,7 @@ export default function QuizEngine() {
   const [elapsed, setElapsed] = useState(0);
   const [generating, setGenerating] = useState(false);
   const [filterDiff, setFilterDiff] = useState('all');
+  const [linkingQuiz, setLinkingQuiz] = useState(null);
   const timerRef = useRef(null);
   const startRef = useRef(null);
   const queryClient = useQueryClient();
