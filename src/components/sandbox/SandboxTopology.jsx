@@ -507,6 +507,20 @@ export default function SandboxTopology({ target, onSelectTarget, isRunning, cur
         )}
       </div>
 
+      {/* Target selected banner */}
+      {target && (
+        <div className="px-4 py-2 border-t border-primary/20 bg-primary/5 flex items-center gap-2 text-xs text-primary font-medium">
+          <span className="text-base">🎯</span>
+          Target locked: <span className="font-bold">{target.name}</span> ({target.ip}) — now choose a scenario below and click Launch
+        </div>
+      )}
+      {!target && (
+        <div className="px-4 py-2 border-t border-border bg-secondary/20 flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="text-base">👆</span>
+          Click a VM node (Web Server, DB Server, Workstation, or IoT) to set it as the attack target
+        </div>
+      )}
+
       {/* Legend + hint */}
       <div className="flex items-center flex-wrap gap-x-4 gap-y-1 px-4 py-2.5 border-t border-border bg-[#060d12]">
         {Object.entries(STATUS_STYLE).map(([k, v]) => (
