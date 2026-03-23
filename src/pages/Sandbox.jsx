@@ -219,6 +219,15 @@ Return JSON:
             <span className="ml-1 bg-accent/20 text-accent text-[10px] font-bold px-1.5 py-0.5 rounded-full">{logs.length}</span>
           )}
         </button>
+        <button
+          onClick={() => setActiveTab('sessions')}
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === 'sessions' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <History className="w-4 h-4" /> Saved Sessions
+          {savedSessions.length > 0 && (
+            <span className="ml-1 bg-secondary text-muted-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">{savedSessions.length}</span>
+          )}
+        </button>
       </div>
 
       {/* Tab content */}
