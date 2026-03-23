@@ -1,6 +1,7 @@
 import React from 'react';
-import { CheckCircle2, XCircle, Trophy, RotateCcw, ArrowRight, Clock } from 'lucide-react';
+import { CheckCircle2, XCircle, Trophy, RotateCcw, ArrowRight, Clock, FlaskConical, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
@@ -11,9 +12,10 @@ function formatTime(seconds) {
 export default function QuizResults({ quiz, attempt, onRetry, onNext }) {
   const passed = attempt.passed;
   const pct = Math.round(attempt.score);
-
   const correctCount = attempt.answers.filter(a => a.correct).length;
   const total = attempt.answers.length;
+
+  const showLabSuggestion = !passed && quiz.linked_room_id;
 
   return (
     <div className="space-y-6 text-center">
@@ -40,6 +42,39 @@ export default function QuizResults({ quiz, attempt, onRetry, onNext }) {
             : `You need ${quiz.pass_threshold}% to pass. Keep practicing!`}
         </p>
       </div>
+
+      {/* ── Lab suggestion on fail ── */}
+      {showLabSuggestion && (
+        <div className="bg-amber-500/5 border border-amber-500/25 rounded-2xl p-4 text-left space-y-3">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="w-4 h-4 text-amber-400 shrink-0" />
+            <p className="text-sm font-semibold text-amber-400">Recommended Practice Lab</p>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Based on your quiz result, we recommend practicing in this lab to strengthen your understanding before retrying:
+          </p>
+          <div className="flex items-center justify-between gap-3 bg-secondary/40 border border-border rounded-xl px-4 py-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                <FlaskConical className="w-4 h-4 text-amber-400" />
+              </div>
+              <p className="text-sm font-semibold text-foreground truncate">
+                {quiz.linked_room_name || 'Linked Lab'}
+              </p>
+            </div>
+            <Link
+              to={`/RoomDetail?id=${quiz.linked_room_id}`}
+              className="shrink-0"
+            >
+              <Button size="sm" className="gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30">
+                <FlaskConical className="w-3.5 h-3.5" />
+                Go to Lab
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 text-left">
