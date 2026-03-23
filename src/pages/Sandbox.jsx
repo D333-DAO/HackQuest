@@ -274,9 +274,13 @@ Return JSON:
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border font-medium ${isRunning ? 'bg-destructive/10 border-destructive/30 text-destructive animate-pulse' : 'bg-secondary border-border text-muted-foreground'}`}>
+          <div className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border font-medium ${
+            isPaused ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse' :
+            isRunning ? 'bg-destructive/10 border-destructive/30 text-destructive animate-pulse' :
+            'bg-secondary border-border text-muted-foreground'
+          }`}>
             <Wifi className="w-3 h-3" />
-            {isRunning ? 'ATTACK RUNNING' : 'IDLE'}
+            {isPaused ? 'PAUSED — DEFENDING' : isRunning ? 'ATTACK RUNNING' : 'IDLE'}
           </div>
           <DownloadReport logs={logs} metrics={metrics} target={target} attack={currentAttack} />
           {logs.length > 0 && (
