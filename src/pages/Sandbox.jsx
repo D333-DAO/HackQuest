@@ -346,7 +346,16 @@ Return JSON:
       {activeTab === 'simulation' && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <SandboxTerminal logs={logs} isLoading={isLoadingAttack} />
-          <SandboxAlertChart metrics={metrics} />
+          <div className="flex flex-col gap-4">
+            <InteractiveDefense
+              isPaused={isPaused}
+              onPause={handlePause}
+              onResume={handleResume}
+              appliedDefenses={appliedDefenses}
+              onApply={handleApplyDefense}
+            />
+            <SandboxAlertChart metrics={metrics} />
+          </div>
         </div>
       )}
       {activeTab === 'terminal' && (
