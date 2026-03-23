@@ -34,7 +34,8 @@ function NavLink({ item, mobile, onClose }) {
           <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
         </button>
         {open && (
-          <div className={`${mobile ? 'relative mt-1 ml-4' : 'absolute top-full left-0 mt-1 z-50'} min-w-[200px] bg-card border border-border rounded-xl shadow-2xl shadow-black/40 overflow-hidden py-1`}>
+          <div className={`${mobile ? 'relative mt-1 ml-4' : 'absolute top-full left-0 z-50 pt-2'} min-w-[200px]`}>
+          <div className={`${mobile ? '' : 'bg-card border border-border rounded-xl shadow-2xl shadow-black/40 overflow-hidden'} py-1`}>
             {item.children.map(child => (
               <Link
                 key={child.path}
