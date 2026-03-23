@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Clock, Loader2, Play, Sparkles, Brain, Trophy, Filter, ChevronRight } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock, Loader2, Play, Sparkles, Brain, Trophy, Filter, ChevronRight, Link2, FlaskConical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import QuizQuestion from '@/components/quiz/QuizQuestion';
 import QuizResults from '@/components/quiz/QuizResults';
+import QuizLabLinker from '@/components/quiz/QuizLabLinker';
 
 const DIFF_STYLE = {
   easy:   { color: 'text-primary',    bg: 'bg-primary/10 border-primary/20' },
