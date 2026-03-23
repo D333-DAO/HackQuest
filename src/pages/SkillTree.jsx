@@ -319,7 +319,7 @@ export default function SkillTree() {
                               style={{ background: isUnlocked(domain.tiers[idx + 1]) ? `${domain.accentColor}40` : '#1e293b' }}
                             />
                           )}
-                        </React.Fragment>
+                          </div>
                       );
                     })}
                   </div>
