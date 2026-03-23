@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { useNotification } from '@/lib/NotificationContext';
 import TerminalEmulator from '@/components/terminal/TerminalEmulator';
 import RoomComments from '@/components/room/RoomComments';
 
@@ -20,6 +21,7 @@ export default function RoomDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const roomId = urlParams.get('id');
   const queryClient = useQueryClient();
+  const { notify } = useNotification();
   const [answers, setAnswers] = useState({});
   const [showHints, setShowHints] = useState({});
   const [showTerminal, setShowTerminal] = useState(false);
@@ -80,11 +82,27 @@ export default function RoomDetail() {
         });
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const question = room.tasks[variables.taskIdx].questions[variables.qIdx];
+      const points = question.points || 10;
+      
       queryClient.invalidateQueries({ queryKey: ['room-progress'] });
       queryClient.invalidateQueries({ queryKey: ['my-progress'] });
       queryClient.invalidateQueries({ queryKey: ['all-progress'] });
-      toast.success('Correct! 🎉');
+      
+      // Check if room is now completed
+      const newCompleted = [...(myProgress?.completed_questions || [])];
+      const globalIdx = room.tasks.slice(0, variables.taskIdx).reduce((s, t) => s + (t.questions?.length || 0), 0) + variables.qIdx;
+      if (!newCompleted.includes(globalIdx)) {
+        newCompleted.push(globalIdx);
+      }
+      
+      const totalQuestions = room.tasks.reduce((s, t) => s + (t.questions?.length || 0), 0);
+      if (newCompleted.length >= totalQuestions) {
+        notify.roomComplete(room.title, room.points || 100);
+      } else {
+        toast.success('Correct! 🎉');
+      }
     },
     onError: () => {
       toast.error('Incorrect answer. Try again!');
