@@ -8,6 +8,7 @@ import AttackerCLI from '@/components/sandbox/AttackerCLI';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
 import SandboxTargetSelector from '@/components/sandbox/SandboxTargetSelector';
+import SandboxTopology from '@/components/sandbox/SandboxTopology';
 import ScenarioLibrary from '@/components/sandbox/ScenarioLibrary';
 import SandboxTerminal from '@/components/sandbox/SandboxTerminal';
 import SandboxMetrics from '@/components/sandbox/SandboxMetrics';
