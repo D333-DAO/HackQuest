@@ -1,79 +1,86 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { base44 } from '@/api/base44Client';
 import '@xterm/xterm/css/xterm.css';
 
-const WELCOME_MSG = [
-  '\x1b[1;32m╔══════════════════════════════════════════╗\x1b[0m',
-  '\x1b[1;32m║   Kali Linux Practice Terminal v1.0      ║\x1b[0m',
-  '\x1b[1;32m║   Powered by AI Simulation               ║\x1b[0m',
-  '\x1b[1;32m╚══════════════════════════════════════════╝\x1b[0m',
+const PROMPT = '\x1b[1;32mroot@kali\x1b[0m:\x1b[1;34m~\x1b[0m\x1b[1;33m#\x1b[0m ';
+
+const WELCOME_LINES = (room) => [
+  '\x1b[1;32m╔══════════════════════════════════════════════════╗\x1b[0m',
+  '\x1b[1;32m║        Hack-Quest Interactive Terminal v2.0      ║\x1b[0m',
+  '\x1b[1;32m╚══════════════════════════════════════════════════╝\x1b[0m',
   '',
-  '\x1b[90mType Linux or Nmap commands to practice.\x1b[0m',
-  '\x1b[90mExamples: ls, pwd, whoami, nmap -sV 10.10.10.10\x1b[0m',
-  '\x1b[90mType \x1b[1;37mhelp\x1b[0m\x1b[90m for a list of supported commands.\x1b[0m',
+  room
+    ? `\x1b[1;33m[*]\x1b[0m Target: \x1b[1;36mtarget.htb\x1b[0m (10.10.10.10) — \x1b[1;35m${room.title}\x1b[0m`
+    : '\x1b[1;33m[*]\x1b[0m Target: \x1b[1;36mtarget.htb\x1b[0m (10.10.10.10)',
+  '\x1b[1;33m[*]\x1b[0m Attacker: \x1b[1;32m10.10.14.5\x1b[0m (kali)',
+  '\x1b[90m[*] Commands are AI-simulated. Type \x1b[37mhelp\x1b[90m for command list.\x1b[0m',
   '',
 ];
 
-const PROMPT = '\x1b[1;32mroot@kali\x1b[0m:\x1b[1;34m~\x1b[0m# ';
-
 export default function TerminalEmulator({ roomContext }) {
-  const terminalRef = useRef(null);
+  const containerRef = useRef(null);
   const termRef = useRef(null);
-  const fitAddonRef = useRef(null);
-  const inputBufferRef = useRef('');
-  const [isLoading, setIsLoading] = useState(false);
+  const fitRef = useRef(null);
+  const inputRef = useRef('');
+  const historyRef = useRef([]); // [{cmd, output}]
+  const cmdHistoryRef = useRef([]); // for up-arrow navigation
+  const cmdHistoryIdxRef = useRef(-1);
   const isLoadingRef = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const writePrompt = useCallback((term) => {
+    term.write(PROMPT);
+  }, []);
 
   useEffect(() => {
     const term = new Terminal({
       cursorBlink: true,
       fontSize: 13,
-      fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+      fontFamily: '"JetBrains Mono", "Fira Code", "Courier New", monospace',
       theme: {
-        background: '#0d1117',
-        foreground: '#c9d1d9',
-        cursor: '#58a6ff',
-        cursorAccent: '#0d1117',
-        black: '#484f58',
-        red: '#ff7b72',
-        green: '#3fb950',
-        yellow: '#d29922',
-        blue: '#58a6ff',
-        magenta: '#bc8cff',
-        cyan: '#39c5cf',
-        white: '#b1bac4',
-        brightBlack: '#6e7681',
-        brightRed: '#ffa198',
-        brightGreen: '#56d364',
-        brightYellow: '#e3b341',
-        brightBlue: '#79c0ff',
-        brightMagenta: '#d2a8ff',
-        brightCyan: '#56d4dd',
-        brightWhite: '#f0f6fc',
+        background: '#0a0a0a',
+        foreground: '#d4d4d4',
+        cursor: '#7cfc00',
+        cursorAccent: '#000000',
+        black: '#3c3c3c',
+        red: '#f14c4c',
+        green: '#23d18b',
+        yellow: '#f5f543',
+        blue: '#3b8eea',
+        magenta: '#d670d6',
+        cyan: '#29b8db',
+        white: '#e5e5e5',
+        brightBlack: '#666666',
+        brightRed: '#f1897f',
+        brightGreen: '#23d18b',
+        brightYellow: '#f5f543',
+        brightBlue: '#3b8eea',
+        brightMagenta: '#d670d6',
+        brightCyan: '#29b8db',
+        brightWhite: '#e5e5e5',
       },
       allowTransparency: true,
-      scrollback: 1000,
+      scrollback: 2000,
+      convertEol: true,
     });
 
     const fitAddon = new FitAddon();
-    const webLinksAddon = new WebLinksAddon();
     term.loadAddon(fitAddon);
-    term.loadAddon(webLinksAddon);
-
-    term.open(terminalRef.current);
+    term.loadAddon(new WebLinksAddon());
+    term.open(containerRef.current);
     fitAddon.fit();
 
     termRef.current = term;
-    fitAddonRef.current = fitAddon;
+    fitRef.current = fitAddon;
 
-    // Print welcome message
-    WELCOME_MSG.forEach(line => term.writeln(line));
-    term.write(PROMPT);
+    // Welcome message
+    WELCOME_LINES(roomContext).forEach(line => term.writeln(line));
+    writePrompt(term);
 
-    // Handle keyboard input
+    // Input handler
     term.onKey(({ key, domEvent }) => {
       if (isLoadingRef.current) return;
 
@@ -81,118 +88,160 @@ export default function TerminalEmulator({ roomContext }) {
 
       if (code === 13) {
         // Enter
-        const cmd = inputBufferRef.current.trim();
+        const cmd = inputRef.current.trim();
         term.writeln('');
-        inputBufferRef.current = '';
-        if (cmd) {
-          executeCommand(cmd, term);
-        } else {
-          term.write(PROMPT);
-        }
+        inputRef.current = '';
+        cmdHistoryIdxRef.current = -1;
+        if (cmd) handleCommand(cmd, term);
+        else writePrompt(term);
+
       } else if (code === 8) {
         // Backspace
-        if (inputBufferRef.current.length > 0) {
-          inputBufferRef.current = inputBufferRef.current.slice(0, -1);
+        if (inputRef.current.length > 0) {
+          inputRef.current = inputRef.current.slice(0, -1);
           term.write('\b \b');
         }
+
+      } else if (code === 38) {
+        // Up arrow — history navigation
+        const hist = cmdHistoryRef.current;
+        if (hist.length === 0) return;
+        cmdHistoryIdxRef.current = Math.min(cmdHistoryIdxRef.current + 1, hist.length - 1);
+        const prev = hist[hist.length - 1 - cmdHistoryIdxRef.current];
+        clearCurrentInput(term);
+        inputRef.current = prev;
+        term.write(prev);
+
+      } else if (code === 40) {
+        // Down arrow
+        const hist = cmdHistoryRef.current;
+        cmdHistoryIdxRef.current = Math.max(cmdHistoryIdxRef.current - 1, -1);
+        clearCurrentInput(term);
+        if (cmdHistoryIdxRef.current === -1) {
+          inputRef.current = '';
+        } else {
+          const next = hist[hist.length - 1 - cmdHistoryIdxRef.current];
+          inputRef.current = next;
+          term.write(next);
+        }
+
+      } else if (code === 67 && domEvent.ctrlKey) {
+        // Ctrl+C
+        term.writeln('^C');
+        inputRef.current = '';
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        writePrompt(term);
+
+      } else if (code === 76 && domEvent.ctrlKey) {
+        // Ctrl+L = clear
+        term.clear();
+        writePrompt(term);
+
       } else if (key.charCodeAt(0) >= 32) {
-        inputBufferRef.current += key;
+        inputRef.current += key;
         term.write(key);
       }
     });
 
-    // Resize observer
-    const resizeObserver = new ResizeObserver(() => {
-      fitAddon.fit();
-    });
-    resizeObserver.observe(terminalRef.current);
+    const ro = new ResizeObserver(() => fitAddon.fit());
+    ro.observe(containerRef.current);
 
     return () => {
-      resizeObserver.disconnect();
+      ro.disconnect();
       term.dispose();
     };
   }, []);
 
-  const executeCommand = async (cmd, term) => {
-    // Local commands
-    if (cmd === 'clear') {
+  const clearCurrentInput = (term) => {
+    const len = inputRef.current.length;
+    if (len > 0) term.write('\b \b'.repeat(len));
+  };
+
+  const handleCommand = async (cmd, term) => {
+    // Add to command history
+    cmdHistoryRef.current.push(cmd);
+
+    // Clear handled locally
+    if (cmd === 'clear' || cmd === 'cls') {
       term.clear();
-      term.write(PROMPT);
+      writePrompt(term);
       return;
     }
 
-    if (cmd === 'help') {
-      const helpLines = [
-        '\x1b[1;33mSupported command categories:\x1b[0m',
-        '  \x1b[1;36mFile System:\x1b[0m   ls, pwd, cd, cat, mkdir, touch, rm, cp, mv, find',
-        '  \x1b[1;36mSystem:\x1b[0m        whoami, id, uname, ps, top, df, free, env, history',
-        '  \x1b[1;36mNetwork:\x1b[0m       nmap, ping, ifconfig, ip, netstat, curl, wget, ssh',
-        '  \x1b[1;36mKali Tools:\x1b[0m    nmap, metasploit, aircrack-ng, nikto, dirb, john, hydra',
-        '  \x1b[1;36mText:\x1b[0m          grep, awk, sed, cut, sort, wc, head, tail',
-        '  \x1b[1;36mPrivilege:\x1b[0m     sudo, su, chmod, chown',
-        '',
-        '\x1b[90mCommands are AI-simulated for learning purposes.\x1b[0m',
-      ];
-      helpLines.forEach(l => term.writeln(l));
-      term.write(PROMPT);
-      return;
-    }
-
-    // AI-simulated execution
+    // Loading indicator
     isLoadingRef.current = true;
     setIsLoading(true);
-    term.write('\x1b[90mExecuting...\x1b[0m');
+    term.write('\x1b[90m⟳ executing...\x1b[0m');
 
-    const contextInfo = roomContext
-      ? `The user is practicing in a room titled "${roomContext.title}" (category: ${roomContext.category}, difficulty: ${roomContext.difficulty}).`
-      : 'The user is practicing general Linux and security commands.';
-
-    const prompt = `You are simulating a Kali Linux terminal for cybersecurity learning.
-${contextInfo}
-
-The user ran this command: \`${cmd}\`
-
-Simulate realistic terminal output as if this command ran on Kali Linux against a practice target machine (IP: 10.10.10.10 if needed, hostname: target.thm).
-- Be educational and realistic — show plausible output a student would see.
-- For nmap scans, show realistic open ports and services.
-- For file system commands, simulate a typical Kali home directory.
-- For tools like metasploit, nikto, dirb, john, hydra — show realistic startup/usage output.
-- Keep output concise but informative (max ~20 lines).
-- Use plain text only, no markdown, no backticks. Just raw terminal output.
-- If the command is dangerous (rm -rf /, etc), print an appropriate warning instead.
-- If the command is completely unrecognized, print: "command not found: <cmd>"`;
-
+    let output = '';
     try {
-      const result = await base44.integrations.Core.InvokeLLM({ prompt });
-      // Clear the "Executing..." text
-      term.write('\r\x1b[K');
-      const lines = result.split('\n');
-      lines.forEach(line => term.writeln(line));
+      const res = await base44.functions.invoke('terminalExecute', {
+        command: cmd,
+        roomContext: roomContext || null,
+        sessionHistory: historyRef.current.slice(-8),
+      });
+
+      output = res.data?.output ?? '';
+
+      // Handle close action (exit/logout)
+      if (res.data?.action === 'close') {
+        term.writeln('\r\x1b[K\x1b[33mSession closed. Type any command to restart.\x1b[0m');
+        historyRef.current = [];
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        writePrompt(term);
+        return;
+      }
+
+      term.write('\r\x1b[K'); // clear "executing..."
+      if (output) {
+        output.split('\n').forEach(line => term.writeln(line));
+      }
     } catch (e) {
       term.write('\r\x1b[K');
-      term.writeln('\x1b[31mError: Could not execute command. Please try again.\x1b[0m');
+      term.writeln('\x1b[31mbash: connection error — check your network and retry\x1b[0m');
     }
+
+    // Store in session history
+    historyRef.current.push({ cmd, output: output.replace(/\x1b\[[0-9;]*m/g, '') });
 
     isLoadingRef.current = false;
     setIsLoading(false);
-    term.write(PROMPT);
+    writePrompt(term);
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-border bg-[#0d1117]">
-      {/* Terminal header bar */}
-      <div className="flex items-center gap-2 px-4 py-2 bg-[#161b22] border-b border-border">
+    <div className="rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/60">
+      {/* macOS-style title bar */}
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-[#1a1a1a] border-b border-[#2a2a2a]">
         <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+          <div className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-default" />
+          <div className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-default" />
+          <div className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-default" />
         </div>
-        <span className="text-xs text-muted-foreground font-mono mx-auto">root@kali:~</span>
+        <span className="text-xs text-[#666] font-mono flex-1 text-center">
+          root@kali — bash
+          {roomContext && <span className="ml-2 text-primary/70">({roomContext.title})</span>}
+        </span>
         {isLoading && (
-          <span className="text-xs text-primary animate-pulse font-mono">processing...</span>
+          <span className="text-xs text-primary font-mono animate-pulse">● running</span>
         )}
       </div>
-      <div ref={terminalRef} className="w-full" style={{ height: '380px', padding: '8px' }} />
+      <div
+        ref={containerRef}
+        className="w-full"
+        style={{ height: '420px', padding: '6px', backgroundColor: '#0a0a0a' }}
+      />
+      {/* Status bar */}
+      <div className="flex items-center justify-between px-4 py-1.5 bg-[#1a1a1a] border-t border-[#2a2a2a]">
+        <span className="text-[10px] text-[#555] font-mono">
+          ↑↓ history &nbsp;|&nbsp; ctrl+c cancel &nbsp;|&nbsp; ctrl+l clear
+        </span>
+        <span className="text-[10px] font-mono text-primary/50">
+          {roomContext ? `target: ${roomContext.category}` : 'practice mode'}
+        </span>
+      </div>
     </div>
   );
 }
