@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TopNav from './TopNav';
+import PageErrorBoundary from './PageErrorBoundary';
 
 export default function AppLayout() {
   const { data: user } = useQuery({
