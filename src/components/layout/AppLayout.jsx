@@ -24,7 +24,9 @@ export default function AppLayout() {
     <div className="min-h-screen bg-background flex flex-col">
       <TopNav user={user} userPoints={totalPoints} streak={streak} />
       <main className="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full">
-        <Outlet />
+        <PageErrorBoundary>
+          <Outlet />
+        </PageErrorBoundary>
       </main>
     </div>
   );
