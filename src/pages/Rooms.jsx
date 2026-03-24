@@ -27,7 +27,7 @@ export default function Rooms() {
     initialData: [],
   });
 
-  const completedIds = new Set(progress.filter(p => p.completed).map(p => p.room_id));
+  const completedIds = new Set((progress || []).filter(p => p.completed).map(p => p.room_id));
 
   const filtered = rooms.filter(r => {
     if (difficulty !== 'all' && r.difficulty !== difficulty) return false;
