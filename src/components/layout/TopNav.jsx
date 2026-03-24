@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Flame, Trophy, Search, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare } from 'lucide-react';
+import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare } from 'lucide-react';
+import GlobalSearch from './GlobalSearch';
 
 const NAV_ITEMS = [
   { label: 'Dashboard',       path: '/Dashboard',        icon: LayoutDashboard },
@@ -104,10 +105,7 @@ export default function TopNav({ user, userPoints, streak }) {
             {/* Right side */}
             <div className="ml-auto flex items-center gap-2">
               {/* Search */}
-              <button className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border text-sm text-muted-foreground hover:text-foreground transition-colors">
-                <Search className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline text-xs">Search rooms...</span>
-              </button>
+              <GlobalSearch />
 
               {/* Streak */}
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border">
