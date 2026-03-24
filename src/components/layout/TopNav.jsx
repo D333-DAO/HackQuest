@@ -91,7 +91,7 @@ export default function TopNav({ user, userPoints, streak }) {
                 <Shield className="w-4.5 h-4.5 text-primary-foreground" style={{ width: 18, height: 18 }} />
               </div>
               <span className="text-base font-black text-foreground tracking-tight hidden sm:block">
-                TryHack<span className="text-primary">Me</span>
+                Hack-<span className="text-primary">Quest</span>
               </span>
             </Link>
 
