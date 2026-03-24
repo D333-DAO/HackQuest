@@ -104,7 +104,10 @@ INSTRUCTIONS:
 8. Raw terminal output ONLY — no markdown, no code blocks, no explanations outside the terminal output.
 9. If command has a typo or doesn't exist: output "bash: <cmd>: command not found"`;
 
-  const result = await base44.integrations.Core.InvokeLLM({ prompt });
+  let result = await base44.integrations.Core.InvokeLLM({ prompt });
+
+  // Strip markdown code fences if AI adds them
+  result = result.replace(/^```[a-z]*\n?/gm, '').replace(/^```$/gm, '').trim();
 
   return Response.json({ output: result });
 });
