@@ -27,6 +27,7 @@ import SavedQuizzes from './pages/SavedQuizzes';
 import Community from './pages/Community';
 import DiscussionDetail from './pages/DiscussionDetail';
 import NewDiscussion from './pages/NewDiscussion';
+import ContentGenerator from './pages/ContentGenerator';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/Community" element={<Community />} />
         <Route path="/Discussion" element={<DiscussionDetail />} />
         <Route path="/NewDiscussion" element={<NewDiscussion />} />
+        <Route path="/ContentGenerator" element={<ContentGenerator />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
