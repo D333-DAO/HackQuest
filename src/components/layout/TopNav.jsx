@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2 } from 'lucide-react';
+import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2 } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
 const NAV_ITEMS = [
@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   ]},
   { label: 'Saved Spot',      path: '/SavedQuizzes',      icon: Bookmark },
   { label: 'Admin',           path: '/ContentGenerator',  icon: Wand2 },
+  { label: 'Performance',     path: '/Performance',       icon: BarChart2 },
   { label: 'Community',       path: '/Community',         icon: MessageSquare },
   { label: 'Leaderboard',     path: '/Leaderboard',       icon: Trophy },
 ];

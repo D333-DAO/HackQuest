@@ -28,6 +28,7 @@ import Community from './pages/Community';
 import DiscussionDetail from './pages/DiscussionDetail';
 import NewDiscussion from './pages/NewDiscussion';
 import ContentGenerator from './pages/ContentGenerator';
+import Performance from './pages/Performance';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
         <Route path="/Discussion" element={<DiscussionDetail />} />
         <Route path="/NewDiscussion" element={<NewDiscussion />} />
         <Route path="/ContentGenerator" element={<ContentGenerator />} />
+        <Route path="/Performance" element={<Performance />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
