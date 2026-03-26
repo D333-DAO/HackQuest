@@ -2,25 +2,16 @@ import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Signal, CheckCircle2, Lock } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-
-const diffColors = {
-  beginner: 'bg-primary/10 text-primary border-primary/20',
-  intermediate: 'bg-accent/10 text-accent border-accent/20',
-  advanced: 'bg-destructive/10 text-destructive border-destructive/20',
-};
+import { ArrowLeft } from 'lucide-react';
+import PathProgressHeader from '../components/paths/PathProgressHeader';
+import RoadmapStep from '../components/paths/RoadmapStep';
+import AssessmentQuizCard from '../components/paths/AssessmentQuizCard';
 
 export default function PathDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const pathId = urlParams.get('id');
 
-  const { data: user } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => base44.auth.me(),
-  });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
 
   const { data: path, isLoading } = useQuery({
     queryKey: ['path', pathId],
@@ -31,17 +22,26 @@ export default function PathDetail() {
     enabled: !!pathId,
   });
 
-  const { data: rooms } = useQuery({
+  const { data: rooms = [] } = useQuery({
     queryKey: ['rooms'],
     queryFn: () => base44.entities.Room.list(),
-    initialData: [],
   });
 
-  const { data: progress } = useQuery({
+  const { data: progress = [] } = useQuery({
     queryKey: ['my-progress', user?.email],
     queryFn: () => base44.entities.UserProgress.filter({ user_email: user.email }),
     enabled: !!user?.email,
-    initialData: [],
+  });
+
+  const { data: quizzes = [] } = useQuery({
+    queryKey: ['quizzes'],
+    queryFn: () => base44.entities.Quiz.list(),
+  });
+
+  const { data: quizAttempts = [] } = useQuery({
+    queryKey: ['quiz-attempts', user?.email],
+    queryFn: () => base44.entities.QuizAttempt.filter({ user_email: user.email }),
+    enabled: !!user?.email,
   });
 
   if (isLoading || !path) {
@@ -52,78 +52,75 @@ export default function PathDetail() {
     );
   }
 
-  const pathRooms = (path.room_ids || []).map(id => rooms.find(r => r.id === id)).filter(Boolean);
+  // Build ordered room list
+  const pathRooms = (path.room_ids || [])
+    .map(id => rooms.find(r => r.id === id))
+    .filter(Boolean);
+
   const completedRoomIds = new Set(progress.filter(p => p.completed).map(p => p.room_id));
   const completedCount = pathRooms.filter(r => completedRoomIds.has(r.id)).length;
   const progressPct = pathRooms.length > 0 ? Math.round((completedCount / pathRooms.length) * 100) : 0;
+  const isPathComplete = pathRooms.length > 0 && completedCount === pathRooms.length;
+
+  // Find assessment quiz linked to this path
+  const assessmentQuiz = quizzes.find(q => q.path_id === path.id) || null;
+
+  // Check if user passed the assessment
+  const hasPassed = assessmentQuiz
+    ? quizAttempts.some(a => a.quiz_id === assessmentQuiz.id && a.passed)
+    : false;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <Link to="/Paths" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <div className="space-y-6 max-w-3xl mx-auto pb-10">
+      <Link
+        to="/Paths"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
         <ArrowLeft className="w-4 h-4" /> Back to Paths
       </Link>
 
-      {path.image_url && (
-        <div className="rounded-2xl overflow-hidden border border-border max-h-80 w-full">
-          <img src={path.image_url} alt={path.title} className="w-full h-full object-cover" />
-        </div>
-      )}
+      {/* Header with progress */}
+      <PathProgressHeader
+        path={path}
+        completedCount={completedCount}
+        totalRooms={pathRooms.length}
+        progressPct={progressPct}
+        isComplete={isPathComplete}
+      />
 
-      <div className="bg-card border border-border rounded-2xl p-6 lg:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+      {/* Roadmap */}
+      <div>
+        <h2 className="text-base font-semibold text-foreground mb-4">Learning Roadmap</h2>
+
+        {pathRooms.length === 0 ? (
+          <div className="bg-card border border-border rounded-2xl p-8 text-center">
+            <p className="text-sm text-muted-foreground">No rooms assigned to this path yet.</p>
+          </div>
+        ) : (
           <div>
-            <h1 className="text-2xl font-bold text-foreground">{path.title}</h1>
-            <p className="text-sm text-muted-foreground mt-2">{path.description}</p>
+            {pathRooms.map((room, idx) => {
+              const isCompleted = completedRoomIds.has(room.id);
+              // Each room unlocks when the previous is done (sequential) OR always open
+              const isLocked = false; // All rooms visible; change to: idx > 0 && !completedRoomIds.has(pathRooms[idx-1].id) for sequential lock
+              return (
+                <RoadmapStep
+                  key={room.id}
+                  room={room}
+                  index={idx}
+                  isCompleted={isCompleted}
+                  isLocked={isLocked}
+                  isLast={idx === pathRooms.length - 1}
+                />
+              );
+            })}
+
+            {/* Final Assessment Quiz node */}
+            <AssessmentQuizCard
+              quiz={assessmentQuiz}
+              isUnlocked={isPathComplete}
+              hasPassed={hasPassed}
+            />
           </div>
-          <Badge variant="outline" className={`flex-shrink-0 ${diffColors[path.difficulty] || diffColors.beginner}`}>
-            {path.difficulty}
-          </Badge>
-        </div>
-
-        <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
-          <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {path.estimated_hours || '?'} hours</span>
-          <span className="flex items-center gap-1"><Signal className="w-4 h-4" /> {pathRooms.length} rooms</span>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Progress</span>
-            <span className="text-primary font-medium">{progressPct}%</span>
-          </div>
-          <Progress value={progressPct} className="h-2" />
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <h2 className="text-lg font-semibold text-foreground">Rooms in this Path</h2>
-        {pathRooms.map((room, idx) => {
-          const done = completedRoomIds.has(room.id);
-          return (
-            <Link
-              key={room.id}
-              to={`/RoomDetail?id=${room.id}`}
-              className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 ${
-                done
-                  ? 'bg-primary/5 border-primary/20'
-                  : 'bg-card border-border hover:border-primary/20'
-              }`}
-            >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold ${
-                done ? 'bg-primary/20 text-primary' : 'bg-secondary text-muted-foreground'
-              }`}>
-                {done ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${done ? 'text-primary' : 'text-foreground'}`}>{room.title}</p>
-                <p className="text-xs text-muted-foreground truncate">{room.description}</p>
-              </div>
-              <Badge variant="outline" className="text-[10px]">{room.difficulty}</Badge>
-              <span className="text-xs text-muted-foreground">{room.points} pts</span>
-            </Link>
-          );
-        })}
-        {pathRooms.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">No rooms assigned to this path yet.</p>
         )}
       </div>
     </div>

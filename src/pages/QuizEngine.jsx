@@ -106,6 +106,7 @@ function Timer({ seconds, limit }) {
 export default function QuizEngine() {
   const urlParams = new URLSearchParams(window.location.search);
   const pathIdFilter = urlParams.get('path_id');
+  const quizIdParam = urlParams.get('quiz_id');
 
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
@@ -130,6 +131,14 @@ export default function QuizEngine() {
       ? base44.entities.Quiz.filter({ path_id: pathIdFilter })
       : base44.entities.Quiz.list('-created_date', 50),
   });
+
+  // Auto-start a specific quiz when quiz_id param is present
+  useEffect(() => {
+    if (quizIdParam && quizzes.length > 0 && phase === 'list' && !activeQuiz) {
+      const target = quizzes.find(q => q.id === quizIdParam);
+      if (target) handleStart(target);
+    }
+  }, [quizIdParam, quizzes]);
   const { data: myAttempts = [] } = useQuery({
     queryKey: ['quiz_attempts', user?.email],
     queryFn: () => user ? base44.entities.QuizAttempt.filter({ user_email: user.email }) : [],
