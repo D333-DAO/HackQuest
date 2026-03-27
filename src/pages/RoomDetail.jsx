@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useNotification } from '@/lib/NotificationContext';
 import TerminalEmulator from '@/components/terminal/TerminalEmulator';
 import RoomComments from '@/components/room/RoomComments';
+import TaskLearningMaterial from '@/components/room/TaskLearningMaterial';
 
 const diffColors = {
   easy: 'bg-primary/10 text-primary border-primary/20',
@@ -25,6 +26,7 @@ export default function RoomDetail() {
   const [answers, setAnswers] = useState({});
   const [showHints, setShowHints] = useState({});
   const [showTerminal, setShowTerminal] = useState(false);
+  const [localRoom, setLocalRoom] = useState(null);
 
   const { data: user } = useQuery({
     queryKey: ['me'],
@@ -109,6 +111,18 @@ export default function RoomDetail() {
     },
   });
 
+  const activeRoom = localRoom || room;
+  const isAdmin = user?.role === 'admin';
+
+  const handleMaterialGenerated = (material, taskIdx) => {
+    setLocalRoom(prev => {
+      const base = prev || room;
+      const updatedTasks = [...(base.tasks || [])];
+      updatedTasks[taskIdx] = { ...updatedTasks[taskIdx], learning_material: material };
+      return { ...base, tasks: updatedTasks };
+    });
+  };
+
   if (isLoading || !room) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -128,16 +142,16 @@ export default function RoomDetail() {
 
       <div className="bg-card border border-border rounded-2xl p-6 lg:p-8">
         <div className="flex items-start justify-between gap-4 mb-2">
-          <h1 className="text-2xl font-bold text-foreground">{room.title}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{activeRoom.title}</h1>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Badge variant="outline" className={diffColors[room.difficulty] || diffColors.easy}>{room.difficulty}</Badge>
+            <Badge variant="outline" className={diffColors[activeRoom.difficulty] || diffColors.easy}>{activeRoom.difficulty}</Badge>
             <div className="flex items-center gap-1 text-primary">
               <Zap className="w-4 h-4" />
-              <span className="text-sm font-bold">{room.points} pts</span>
+              <span className="text-sm font-bold">{activeRoom.points} pts</span>
             </div>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground mb-4">{room.description}</p>
+        <p className="text-sm text-muted-foreground mb-4">{activeRoom.description}</p>
         <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
@@ -164,14 +178,22 @@ export default function RoomDetail() {
       </div>
 
       {showTerminal && (
-        <TerminalEmulator roomContext={{ title: room.title, category: room.category, difficulty: room.difficulty }} />
+        <TerminalEmulator roomContext={{ title: activeRoom.title, category: activeRoom.category, difficulty: activeRoom.difficulty }} />
       )}
 
       <div className="space-y-4">
-        {room.tasks?.map((task, taskIdx) => (
+        {activeRoom.tasks?.map((task, taskIdx) => (
           <div key={taskIdx} className="bg-card border border-border rounded-2xl p-6">
             <h3 className="text-base font-semibold text-foreground mb-1">Task {taskIdx + 1}: {task.title}</h3>
-            <p className="text-sm text-muted-foreground mb-4">{task.description}</p>
+            <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+
+            <TaskLearningMaterial
+              task={task}
+              room={activeRoom}
+              taskIdx={taskIdx}
+              isAdmin={isAdmin}
+              onMaterialGenerated={handleMaterialGenerated}
+            />
             <div className="space-y-3">
               {task.questions?.map((q, qIdx) => {
                 const gIdx = globalQIdx++;
@@ -228,7 +250,7 @@ export default function RoomDetail() {
             </div>
           </div>
         ))}
-        {(!room.tasks || room.tasks.length === 0) && (
+        {(!activeRoom.tasks || activeRoom.tasks.length === 0) && (
           <div className="bg-card border border-border rounded-2xl p-8 text-center">
             <p className="text-sm text-muted-foreground">No tasks available for this room yet.</p>
           </div>

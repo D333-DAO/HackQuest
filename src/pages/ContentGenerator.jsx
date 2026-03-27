@@ -152,13 +152,14 @@ export default function ContentGenerator() {
          - category: "${category}"
          - points: number (20 for easy, 30 for medium, 40 for hard)
          - tasks: array of 2-3 task objects, each with:
-           - title: string (e.g. "Reconnaissance", "Initial Foothold", "Privilege Escalation")
-           - description: string (what the task covers)
-           - questions: array of 3-5 question objects, each with:
-             - question: string (specific technical question about the exploitation step)
-             - answer: string (short answer, e.g. flag placeholder "user"/"root" or specific technical answer)
-             - hint: string (helpful hint without giving away the answer)
-             - points: number (5-20)
+          - title: string (e.g. "Reconnaissance", "Initial Foothold", "Privilege Escalation")
+          - description: string (what the task covers)
+          - learning_material: string (comprehensive markdown educational content for this task, 300-500 words. Use ## headings, **bold** terms, \`code\` for commands/tools. Cover core concepts, relevant tools, techniques, and approach guidance without giving away answers.)
+          - questions: array of 3-5 question objects, each with:
+            - question: string (specific technical question about the exploitation step)
+            - answer: string (short answer, e.g. flag placeholder "user"/"root" or specific technical answer)
+            - hint: string (helpful hint without giving away the answer)
+            - points: number (5-20)
          Make it realistic, educational, and aligned with real HTB machine styles. Use real CVEs, tools, and techniques.`
       : type === 'quiz'
       ? `Generate a cybersecurity quiz about "${topic}".

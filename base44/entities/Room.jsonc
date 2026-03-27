@@ -1,0 +1,89 @@
+{
+  "name": "Room",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Room title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Room description"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "default": "easy"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "networking",
+        "web_hacking",
+        "cryptography",
+        "linux",
+        "windows",
+        "forensics",
+        "reverse_engineering",
+        "privilege_escalation",
+        "osint",
+        "other"
+      ],
+      "default": "other"
+    },
+    "points": {
+      "type": "number",
+      "default": 100,
+      "description": "Points awarded for completion"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "Tasks within the room",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "learning_material": {
+            "type": "string",
+            "description": "Educational content / reading material for this task"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "answer": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "points": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
