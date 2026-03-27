@@ -8,6 +8,7 @@ import RecentActivity from '../components/dashboard/RecentActivity';
 import FeaturedPaths from '../components/dashboard/FeaturedPaths';
 import NetworkTopology from '../components/dashboard/NetworkTopology';
 import GlobalThreatFeed from '../components/dashboard/GlobalThreatFeed';
+import ForYou from '../components/dashboard/ForYou';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
@@ -67,6 +68,9 @@ export default function Dashboard() {
             <Skeleton className="h-64 rounded-2xl" />
           ) : (
             <RecentActivity progress={progress} rooms={rooms} />
+          )}
+          {!isLoading && (
+            <ForYou progress={progress} rooms={rooms} paths={paths} />
           )}
         </div>
       </div>
