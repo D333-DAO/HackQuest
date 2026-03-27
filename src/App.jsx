@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster"
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -11,26 +11,36 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import PageTransition from './components/layout/PageTransition';
-import Dashboard from './pages/Dashboard';
-import Paths from './pages/Paths';
-import PathDetail from './pages/PathDetail';
-import Rooms from './pages/Rooms';
-import RoomDetail from './pages/RoomDetail';
-import Leaderboard from './pages/Leaderboard';
-import Profile from './pages/Profile';
-import SkillTree from './pages/SkillTree';
-import Sandbox from './pages/Sandbox';
-import AttackSimulator from './pages/AttackSimulator';
-import ScenarioBuilder from './pages/ScenarioBuilder';
-import AttackHistory from './pages/AttackHistory';
-import MitreScenarioBuilder from './pages/MitreScenarioBuilder';
-import QuizEngine from './pages/QuizEngine';
-import SavedQuizzes from './pages/SavedQuizzes';
-import Community from './pages/Community';
-import DiscussionDetail from './pages/DiscussionDetail';
-import NewDiscussion from './pages/NewDiscussion';
-import ContentGenerator from './pages/ContentGenerator';
-import Performance from './pages/Performance';
+
+// Lazy-loaded route components for code splitting
+const Dashboard          = lazy(() => import('./pages/Dashboard'));
+const Paths              = lazy(() => import('./pages/Paths'));
+const PathDetail         = lazy(() => import('./pages/PathDetail'));
+const Rooms              = lazy(() => import('./pages/Rooms'));
+const RoomDetail         = lazy(() => import('./pages/RoomDetail'));
+const Leaderboard        = lazy(() => import('./pages/Leaderboard'));
+const Profile            = lazy(() => import('./pages/Profile'));
+const SkillTree          = lazy(() => import('./pages/SkillTree'));
+const Sandbox            = lazy(() => import('./pages/Sandbox'));
+const AttackSimulator    = lazy(() => import('./pages/AttackSimulator'));
+const ScenarioBuilder    = lazy(() => import('./pages/ScenarioBuilder'));
+const AttackHistory      = lazy(() => import('./pages/AttackHistory'));
+const MitreScenarioBuilder = lazy(() => import('./pages/MitreScenarioBuilder'));
+const QuizEngine         = lazy(() => import('./pages/QuizEngine'));
+const SavedQuizzes       = lazy(() => import('./pages/SavedQuizzes'));
+const Community          = lazy(() => import('./pages/Community'));
+const DiscussionDetail   = lazy(() => import('./pages/DiscussionDetail'));
+const NewDiscussion      = lazy(() => import('./pages/NewDiscussion'));
+const ContentGenerator   = lazy(() => import('./pages/ContentGenerator'));
+const Performance        = lazy(() => import('./pages/Performance'));
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+}
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -57,6 +67,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/" element={<Navigate to="/Dashboard" replace />} />
       <Route element={<AppLayout />}>
@@ -83,6 +94,7 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 
@@ -91,11 +103,13 @@ function App() {
   React.useEffect(() => {
     const apply = (dark) => {
       document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.classList.toggle('light', !dark);
     };
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     apply(mq.matches);
-    mq.addEventListener('change', (e) => apply(e.matches));
-    return () => mq.removeEventListener('change', (e) => apply(e.matches));
+    const handler = (e) => apply(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
   }, []);
 
   return (

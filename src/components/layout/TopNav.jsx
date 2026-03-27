@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2 } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2, ArrowLeft } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
+
+// Root paths — no back button shown on these
+const ROOT_PATHS = new Set([
+  '/Dashboard', '/Paths', '/Rooms', '/Leaderboard', '/Profile',
+  '/SkillTree', '/Sandbox', '/AttackSimulator', '/ScenarioBuilder',
+  '/AttackHistory', '/MitreScenarioBuilder', '/QuizEngine', '/SavedQuizzes',
+  '/Community', '/NewDiscussion', '/ContentGenerator', '/Performance',
+]);
 
 const NAV_ITEMS = [
   { label: 'Dashboard',       path: '/Dashboard',        icon: LayoutDashboard },
@@ -81,14 +89,33 @@ function NavLink({ item, mobile, onClose }) {
 
 export default function TopNav({ user, userPoints, streak }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isRootPath = ROOT_PATHS.has(location.pathname);
+  const showBackButton = !isRootPath;
 
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-sidebar/95 backdrop-blur-xl" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
           <div className="flex items-center h-14 gap-4">
-            {/* Logo */}
-            <Link to="/Dashboard" className="flex items-center gap-2.5 shrink-0">
+            {/* Back button on child screens (mobile) / Logo on root screens */}
+            {showBackButton ? (
+              <button
+                onClick={() => navigate(-1)}
+                aria-label="Go back"
+                className="lg:hidden flex items-center justify-center w-9 h-9 min-w-[44px] min-h-[44px] -ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors shrink-0"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            ) : null}
+
+            {/* Logo — always visible on desktop, on mobile only on root screens */}
+            <Link
+              to="/Dashboard"
+              className={`flex items-center gap-2.5 shrink-0 ${showBackButton ? 'hidden lg:flex' : 'flex'}`}
+            >
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Shield className="w-4.5 h-4.5 text-primary-foreground" style={{ width: 18, height: 18 }} />
               </div>

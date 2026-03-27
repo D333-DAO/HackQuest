@@ -5,11 +5,48 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Light theme (default) ── */
   :root {
     --font-sans: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* AMOLED Black palette */
+    --background: 210 20% 98%;
+    --foreground: 220 25% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+    --primary: 84 60% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 15% 93%;
+    --secondary-foreground: 220 20% 20%;
+    --muted: 210 15% 93%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 84 60% 38%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 15% 84%;
+    --input: 210 15% 84%;
+    --ring: 84 60% 38%;
+    --chart-1: 84 60% 38%;
+    --chart-2: 199 80% 40%;
+    --chart-3: 270 60% 55%;
+    --chart-4: 40 80% 48%;
+    --chart-5: 350 70% 50%;
+    --radius: 0.5rem;
+    --sidebar-background: 210 18% 95%;
+    --sidebar-foreground: 220 25% 10%;
+    --sidebar-primary: 84 60% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 15% 90%;
+    --sidebar-accent-foreground: 220 20% 20%;
+    --sidebar-border: 210 15% 84%;
+    --sidebar-ring: 84 60% 38%;
+  }
+
+  /* ── Dark / AMOLED theme ── */
+  .dark {
     --background: 0 0% 0%;
     --foreground: 210 40% 96%;
     --card: 0 0% 5%;
@@ -17,11 +54,11 @@
     --popover: 0 0% 5%;
     --popover-foreground: 210 40% 96%;
     --primary: 84 80% 56%;
-    --primary-foreground: 216 44% 11%;
+    --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 10%;
     --secondary-foreground: 210 40% 90%;
     --muted: 0 0% 10%;
-    --muted-foreground: 215 20% 52%;
+    --muted-foreground: 215 20% 55%;
     --accent: 84 80% 56%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84% 60%;
@@ -44,8 +81,52 @@
     --sidebar-border: 84 60% 25%;
     --sidebar-ring: 84 80% 56%;
   }
+}
 
-  .dark {
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    overscroll-behavior-y: none;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings scale */
+  h1 { @apply text-2xl font-bold tracking-tight; }
+  h2 { @apply text-xl font-semibold tracking-tight; }
+  h3 { @apply text-lg font-semibold; }
+  h4 { @apply text-base font-semibold; }
+
+  /* WCAG focus rings — visible for keyboard nav */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Prevent text selection on UI chrome elements */
+  button, a, nav, header, [role="tab"], [role="menuitem"] {
+    @apply select-none;
+  }
+
+  /* Minimum 44px tap targets for all interactive elements on mobile */
+  @media (max-width: 1023px) {
+    button:not([data-no-min-tap]),
+    a:not([data-no-min-tap]),
+    [role="button"]:not([data-no-min-tap]) {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+}
+
+/* Auto color-scheme sync — JS in App.jsx toggles .dark but CSS media provides the fallback */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
     --background: 0 0% 0%;
     --foreground: 210 40% 96%;
     --card: 0 0% 5%;
@@ -57,7 +138,7 @@
     --secondary: 0 0% 10%;
     --secondary-foreground: 210 40% 90%;
     --muted: 0 0% 10%;
-    --muted-foreground: 215 20% 52%;
+    --muted-foreground: 215 20% 55%;
     --accent: 84 80% 56%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84% 60%;
@@ -73,21 +154,5 @@
     --sidebar-accent-foreground: 210 40% 96%;
     --sidebar-border: 84 60% 25%;
     --sidebar-ring: 84 80% 56%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-    overscroll-behavior-y: none;
-    font-size: 14px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  /* Prevent text selection on UI chrome elements */
-  button, a, nav, header, [role="tab"], [role="menuitem"] {
-    @apply select-none;
   }
 }
