@@ -10,6 +10,7 @@ import NotificationCenter from '@/components/NotificationCenter';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
+import PageTransition from './components/layout/PageTransition';
 import Dashboard from './pages/Dashboard';
 import Paths from './pages/Paths';
 import PathDetail from './pages/PathDetail';

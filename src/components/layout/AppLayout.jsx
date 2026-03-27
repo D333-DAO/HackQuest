@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import TopNav from './TopNav';
 import BottomNav from './BottomNav';
 import PageErrorBoundary from './PageErrorBoundary';
+import PageTransition from './PageTransition';
 
 export default function AppLayout() {
   const { data: user } = useQuery({
@@ -26,7 +27,9 @@ export default function AppLayout() {
       <TopNav user={user} userPoints={totalPoints} streak={streak} />
       <main className="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full pb-20 lg:pb-6">
         <PageErrorBoundary>
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </PageErrorBoundary>
       </main>
       <BottomNav />

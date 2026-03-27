@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import RoomCard from '../components/rooms/RoomCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MobileSelect } from '@/components/ui/MobileSelect';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+
+const DIFFICULTY_OPTIONS = [
+  { value: 'all', label: 'All Difficulty' },
+  { value: 'easy', label: 'Easy' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'hard', label: 'Hard' },
+];
+
+const CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'networking', label: 'Networking' },
+  { value: 'web_hacking', label: 'Web Hacking' },
+  { value: 'cryptography', label: 'Cryptography' },
+  { value: 'linux', label: 'Linux' },
+  { value: 'windows', label: 'Windows' },
+  { value: 'forensics', label: 'Forensics' },
+  { value: 'osint', label: 'OSINT' },
+  { value: 'other', label: 'Other' },
+];
 
 export default function Rooms() {
   const [difficulty, setDifficulty] = useState('all');
   const [category, setCategory] = useState('all');
+  const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
     queryKey: ['me'],
@@ -27,6 +48,12 @@ export default function Rooms() {
     initialData: [],
   });
 
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    await queryClient.invalidateQueries({ queryKey: ['my-progress'] });
+  };
+  const { containerRef, pullDistance, refreshing, onTouchStart, onTouchMove, onTouchEnd } = usePullToRefresh(handleRefresh);
+
   const completedIds = new Set((progress || []).filter(p => p.completed).map(p => p.room_id));
 
   const filtered = rooms.filter(r => {
@@ -36,36 +63,39 @@ export default function Rooms() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div
+      ref={containerRef}
+      className="space-y-6 max-w-7xl mx-auto overflow-y-auto"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {pullDistance > 0 && (
+        <div className="flex items-center justify-center transition-all" style={{ height: pullDistance, overflow: 'hidden' }}>
+          <div className={`w-7 h-7 rounded-full border-2 border-primary/40 border-t-primary ${refreshing ? 'animate-spin' : ''}`}
+            style={{ transform: `rotate(${(pullDistance / 72) * 360}deg)` }} />
+        </div>
+      )}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Rooms</h1>
         <p className="text-sm text-muted-foreground mt-1">Hands-on labs and challenges</p>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Select value={difficulty} onValueChange={setDifficulty}>
-          <SelectTrigger className="w-36 bg-secondary"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Difficulty</SelectItem>
-            <SelectItem value="easy">Easy</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="hard">Hard</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-44 bg-secondary"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="networking">Networking</SelectItem>
-            <SelectItem value="web_hacking">Web Hacking</SelectItem>
-            <SelectItem value="cryptography">Cryptography</SelectItem>
-            <SelectItem value="linux">Linux</SelectItem>
-            <SelectItem value="windows">Windows</SelectItem>
-            <SelectItem value="forensics">Forensics</SelectItem>
-            <SelectItem value="osint">OSINT</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={difficulty}
+          onValueChange={setDifficulty}
+          placeholder="All Difficulty"
+          options={DIFFICULTY_OPTIONS}
+          triggerClassName="w-36 bg-secondary"
+        />
+        <MobileSelect
+          value={category}
+          onValueChange={setCategory}
+          placeholder="All Categories"
+          options={CATEGORY_OPTIONS}
+          triggerClassName="w-44 bg-secondary"
+        />
       </div>
 
       {isLoading ? (

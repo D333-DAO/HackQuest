@@ -10,7 +10,6 @@ export default function DiscussionDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const discussionId = urlParams.get('id');
   const [replyContent, setReplyContent] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
@@ -43,26 +42,42 @@ export default function DiscussionDetail() {
         author_email: user.email,
         author_name: user.full_name,
       });
-
-      // Update reply count
       await base44.entities.Discussion.update(discussionId, {
         reply_count: (discussion.reply_count || 0) + 1,
       });
-
       return reply;
     },
-    onSuccess: () => {
+    onMutate: async (content) => {
+      await queryClient.cancelQueries({ queryKey: ['replies', discussionId] });
+      const previousReplies = queryClient.getQueryData(['replies', discussionId]);
+      const optimisticReply = {
+        id: `optimistic-${Date.now()}`,
+        discussion_id: discussionId,
+        content,
+        author_email: user.email,
+        author_name: user.full_name,
+        upvote_count: 0,
+        is_solution: false,
+        created_date: new Date().toISOString(),
+      };
+      queryClient.setQueryData(['replies', discussionId], (old = []) => [optimisticReply, ...old]);
       setReplyContent('');
+      return { previousReplies };
+    },
+    onError: (_err, _content, context) => {
+      if (context?.previousReplies) {
+        queryClient.setQueryData(['replies', discussionId], context.previousReplies);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['replies', discussionId] });
       queryClient.invalidateQueries({ queryKey: ['discussion', discussionId] });
     },
   });
 
-  const handleSubmitReply = async () => {
+  const handleSubmitReply = () => {
     if (!replyContent.trim()) return;
-    setIsSubmitting(true);
-    await submitReplyMutation.mutateAsync(replyContent);
-    setIsSubmitting(false);
+    submitReplyMutation.mutate(replyContent);
   };
 
   const handleMarkSolution = async (replyId) => {
@@ -191,10 +206,10 @@ export default function DiscussionDetail() {
           />
           <Button
             onClick={handleSubmitReply}
-            disabled={isSubmitting || !replyContent.trim()}
+            disabled={submitReplyMutation.isPending || !replyContent.trim()}
             className="gap-2"
           >
-            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {submitReplyMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Post Answer
           </Button>
         </div>

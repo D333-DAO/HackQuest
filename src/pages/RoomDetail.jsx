@@ -84,6 +84,43 @@ export default function RoomDetail() {
         });
       }
     },
+    onMutate: async ({ taskIdx, qIdx, answer }) => {
+      const task = room.tasks[taskIdx];
+      const question = task.questions[qIdx];
+      // Only apply optimistic update if the answer looks correct (client-side pre-check)
+      if (answer.toLowerCase().trim() !== question.answer.toLowerCase().trim()) return;
+
+      await queryClient.cancelQueries({ queryKey: ['room-progress', roomId, user?.email] });
+      const previousProgress = queryClient.getQueryData(['room-progress', roomId, user?.email]);
+
+      const globalIdx = room.tasks.slice(0, taskIdx).reduce((s, t) => s + (t.questions?.length || 0), 0) + qIdx;
+      const currentCompleted = myProgress?.completed_questions || [];
+      if (!currentCompleted.includes(globalIdx)) {
+        const newCompleted = [...currentCompleted, globalIdx];
+        const totalQuestions = room.tasks.reduce((s, t) => s + (t.questions?.length || 0), 0);
+        queryClient.setQueryData(['room-progress', roomId, user?.email], (old) => {
+          const base = old || { user_email: user?.email, room_id: roomId, completed_questions: [], points_earned: 0 };
+          return [{
+            ...base,
+            completed_questions: newCompleted,
+            completed: newCompleted.length >= totalQuestions,
+            points_earned: (base.points_earned || 0) + (question.points || 10),
+          }];
+        });
+        // Clear the answer input optimistically
+        setAnswers(prev => {
+          const next = { ...prev };
+          delete next[`${taskIdx}-${qIdx}`];
+          return next;
+        });
+      }
+      return { previousProgress };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousProgress !== undefined) {
+        queryClient.setQueryData(['room-progress', roomId, user?.email], context.previousProgress);
+      }
+    },
     onSuccess: (_, variables) => {
       const question = room.tasks[variables.taskIdx].questions[variables.qIdx];
       const points = question.points || 10;
