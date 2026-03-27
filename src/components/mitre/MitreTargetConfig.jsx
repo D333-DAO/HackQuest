@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Server, Monitor, Database, Cpu, Wifi, Shield } from 'lucide-react';
+import { MobileSelect } from '@/components/ui/MobileSelect';
 
 const TARGET_PRESETS = [
   {
@@ -168,13 +169,13 @@ export default function MitreTargetConfig({ target, onChange }) {
             {[['Patch Level', 'patchLevel', PATCH_LEVELS], ['Firewall', 'firewall', FIREWALL_OPTS], ['EDR', 'edr', EDR_OPTS]].map(([label, key, opts]) => (
               <div key={key}>
                 <label className="text-[10px] text-muted-foreground mb-1 block">{label}</label>
-                <select
+                <MobileSelect
                   value={form[key]}
-                  onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                  className="w-full px-3 py-1.5 text-xs bg-secondary/40 border border-border rounded-lg text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                >
-                  {opts.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
+                  onValueChange={val => setForm(f => ({ ...f, [key]: val }))}
+                  placeholder={label}
+                  options={opts.map(o => ({ value: o, label: o }))}
+                  triggerClassName="w-full text-xs bg-secondary/40 border-border"
+                />
               </div>
             ))}
             <button

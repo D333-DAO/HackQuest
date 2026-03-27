@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Wand2, Server, BookOpen, Brain, Loader2, CheckCircle2, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { MobileSelect } from '@/components/ui/MobileSelect';
 import { toast } from 'sonner';
 
 const CATEGORIES = ['linux', 'windows', 'web_hacking', 'networking', 'cryptography', 'forensics', 'reverse_engineering', 'privilege_escalation', 'osint', 'other'];
@@ -33,23 +34,23 @@ function GeneratorForm({ type, onGenerate, isGenerating }) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">Category</label>
-          <select
+          <MobileSelect
             value={category}
-            onChange={e => setCategory(e.target.value)}
-            className="w-full px-3 py-2.5 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50 text-sm"
-          >
-            {CATEGORIES.map(c => <option key={c} value={c}>{c.replace('_', ' ')}</option>)}
-          </select>
+            onValueChange={setCategory}
+            placeholder="Category"
+            options={CATEGORIES.map(c => ({ value: c, label: c.replace(/_/g, ' ') }))}
+            triggerClassName="w-full py-2.5 bg-secondary border-border text-sm"
+          />
         </div>
         <div>
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">Difficulty</label>
-          <select
+          <MobileSelect
             value={difficulty}
-            onChange={e => setDifficulty(e.target.value)}
-            className="w-full px-3 py-2.5 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50 text-sm"
-          >
-            {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
+            onValueChange={setDifficulty}
+            placeholder="Difficulty"
+            options={DIFFICULTIES.map(d => ({ value: d, label: d }))}
+            triggerClassName="w-full py-2.5 bg-secondary border-border text-sm"
+          />
         </div>
       </div>
       <Button
