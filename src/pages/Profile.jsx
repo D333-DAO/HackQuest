@@ -1,9 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink, Lock } from 'lucide-react';
+import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink, Lock, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import CryptoJS from 'crypto-js';
@@ -215,9 +226,35 @@ export default function Profile() {
             </div>
           </div>
 
-          <Button variant="outline" size="sm" onClick={() => base44.auth.logout()} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" /> Logout
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button variant="outline" size="sm" onClick={() => base44.auth.logout()} className="flex items-center gap-2 min-h-[44px]">
+              <LogOut className="w-4 h-4" /> Logout
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2 min-h-[44px] text-destructive border-destructive/30 hover:bg-destructive/10">
+                  <Trash2 className="w-4 h-4" /> Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete your account and all associated data including progress, badges, and settings. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={() => base44.auth.logout()}
+                  >
+                    Delete Account
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
 

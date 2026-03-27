@@ -82,5 +82,12 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    overscroll-behavior-y: none;
+    font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Prevent text selection on UI chrome elements */
+  button, a, nav, header, [role="tab"], [role="menuitem"] {
+    @apply select-none;
   }
 }

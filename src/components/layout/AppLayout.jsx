@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TopNav from './TopNav';
+import BottomNav from './BottomNav';
 import PageErrorBoundary from './PageErrorBoundary';
 
 export default function AppLayout() {
@@ -23,11 +24,12 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <TopNav user={user} userPoints={totalPoints} streak={streak} />
-      <main className="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full">
+      <main className="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full pb-20 lg:pb-6">
         <PageErrorBoundary>
           <Outlet />
         </PageErrorBoundary>
       </main>
+      <BottomNav />
     </div>
   );
 }

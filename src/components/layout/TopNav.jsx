@@ -84,7 +84,7 @@ export default function TopNav({ user, userPoints, streak }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border bg-sidebar/95 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border bg-sidebar/95 backdrop-blur-xl" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
           <div className="flex items-center h-14 gap-4">
             {/* Logo */}
