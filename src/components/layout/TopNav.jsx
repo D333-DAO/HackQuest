@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2, ArrowLeft } from 'lucide-react';
+import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2, ArrowLeft, ScrollText } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
 // Root paths — no back button shown on these
@@ -8,7 +8,7 @@ const ROOT_PATHS = new Set([
   '/Dashboard', '/Paths', '/Rooms', '/Leaderboard', '/Profile',
   '/SkillTree', '/Sandbox', '/AttackSimulator', '/ScenarioBuilder',
   '/AttackHistory', '/MitreScenarioBuilder', '/QuizEngine', '/SavedQuizzes',
-  '/Community', '/NewDiscussion', '/ContentGenerator', '/Performance',
+  '/Community', '/NewDiscussion', '/ContentGenerator', '/Performance', '/AttackLogs',
 ]);
 
 const NAV_ITEMS = [
@@ -23,6 +23,7 @@ const NAV_ITEMS = [
     { label: 'Attack History',  path: '/AttackHistory',     icon: History },
     { label: 'MITRE Builder',   path: '/MitreScenarioBuilder', icon: Swords },
     { label: 'Quiz Engine',     path: '/QuizEngine',            icon: Brain },
+    { label: 'Attack Logs',     path: '/AttackLogs',            icon: ScrollText },
   ]},
   { label: 'Saved Spot',      path: '/SavedQuizzes',      icon: Bookmark },
   { label: 'Admin',           path: '/ContentGenerator',  icon: Wand2 },

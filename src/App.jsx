@@ -33,6 +33,7 @@ const DiscussionDetail   = lazy(() => import('./pages/DiscussionDetail'));
 const NewDiscussion      = lazy(() => import('./pages/NewDiscussion'));
 const ContentGenerator   = lazy(() => import('./pages/ContentGenerator'));
 const Performance        = lazy(() => import('./pages/Performance'));
+const AttackLogs         = lazy(() => import('./pages/AttackLogs'));
 
 function PageLoader() {
   return (
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
         <Route path="/NewDiscussion" element={<NewDiscussion />} />
         <Route path="/ContentGenerator" element={<ContentGenerator />} />
         <Route path="/Performance" element={<Performance />} />
+        <Route path="/AttackLogs" element={<AttackLogs />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
