@@ -115,14 +115,13 @@ export default function TopNav({ user, userPoints, streak }) {
             {/* Logo — always visible on desktop, on mobile only on root screens */}
             <Link
               to="/Dashboard"
-              className={`flex items-center gap-2.5 shrink-0 ${showBackButton ? 'hidden lg:flex' : 'flex'}`}
+              className={`flex items-center shrink-0 ${showBackButton ? 'hidden lg:flex' : 'flex'}`}
             >
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <Shield className="w-4.5 h-4.5 text-primary-foreground" style={{ width: 18, height: 18 }} />
-              </div>
-              <span className="text-base font-black text-foreground tracking-tight hidden sm:block">
-                Hack-<span className="text-primary">Quest</span>
-              </span>
+              <img
+                src="https://media.base44.com/images/public/69bb33899baabd3ca91eb1f6/c6644a22c_HackQuest___logo___.png"
+                alt="HackQuest"
+                className="h-10 w-auto"
+              />
             </Link>
 
             {/* Desktop Nav */}
