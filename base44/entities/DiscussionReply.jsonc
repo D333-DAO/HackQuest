@@ -1,0 +1,65 @@
+{
+  "name": "DiscussionReply",
+  "type": "object",
+  "properties": {
+    "discussion_id": {
+      "type": "string",
+      "description": "Parent discussion ID"
+    },
+    "content": {
+      "type": "string",
+      "description": "Reply content"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Email of reply author"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Cached author full name"
+    },
+    "upvote_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of upvotes"
+    },
+    "is_solution": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this reply was marked as the solution"
+    }
+  },
+  "required": [
+    "discussion_id",
+    "content",
+    "author_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
