@@ -1,0 +1,101 @@
+{
+  "name": "Discussion",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Discussion thread title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Initial question or topic description"
+    },
+    "path_id": {
+      "type": "string",
+      "description": "Related learning path ID (optional)"
+    },
+    "path_title": {
+      "type": "string",
+      "description": "Cached learning path title"
+    },
+    "quiz_id": {
+      "type": "string",
+      "description": "Related quiz ID (optional)"
+    },
+    "quiz_title": {
+      "type": "string",
+      "description": "Cached quiz title"
+    },
+    "lab_id": {
+      "type": "string",
+      "description": "Related lab/room ID (optional)"
+    },
+    "lab_title": {
+      "type": "string",
+      "description": "Cached lab title"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User-defined tags for categorization"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Email of discussion author"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Cached author full name"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of views"
+    },
+    "reply_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of replies"
+    },
+    "solved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the discussion was marked as solved"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "author_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
