@@ -1,0 +1,78 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "room_id": {
+      "type": "string",
+      "description": "ID of the room"
+    },
+    "completed_questions": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Indices of completed questions"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "points_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "path_id": {
+      "type": "string",
+      "description": "Learning path this progress belongs to (if any)"
+    }
+  },
+  "required": [
+    "user_email",
+    "room_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
