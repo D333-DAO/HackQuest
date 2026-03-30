@@ -1,0 +1,60 @@
+{
+  "name": "UserBadge",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who earned the badge"
+    },
+    "badge_key": {
+      "type": "string",
+      "description": "Unique identifier for the badge (e.g., 'first_blood', 'night_owl')"
+    },
+    "badge_title": {
+      "type": "string",
+      "description": "Display name of the badge"
+    },
+    "badge_icon": {
+      "type": "string",
+      "description": "Emoji or icon for the badge"
+    },
+    "badge_description": {
+      "type": "string",
+      "description": "Description of how the badge was earned"
+    }
+  },
+  "required": [
+    "user_email",
+    "badge_key",
+    "badge_title"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
