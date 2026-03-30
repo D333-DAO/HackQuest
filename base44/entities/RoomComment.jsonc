@@ -1,0 +1,60 @@
+{
+  "name": "RoomComment",
+  "type": "object",
+  "properties": {
+    "room_id": {
+      "type": "string",
+      "description": "ID of the room this comment belongs to"
+    },
+    "content": {
+      "type": "string",
+      "description": "Comment text"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Email of comment author"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Cached author full name"
+    },
+    "helpful_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of helpful votes"
+    }
+  },
+  "required": [
+    "room_id",
+    "content",
+    "author_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
