@@ -24,9 +24,7 @@ This is open source feel free to remix.
 
 Run the app: `npm run dev`
 
-**Publish your changes**
-
-Open [Base44.com](http://Base44.com) and click on Publish.
+**Publish your App with AI using: https://base44.com**
 
 **Docs & Support**
 
