@@ -1,0 +1,124 @@
+{
+  "name": "AttackLog",
+  "type": "object",
+  "properties": {
+    "scenario_name": {
+      "type": "string",
+      "description": "Name of the attack scenario"
+    },
+    "scenario_icon": {
+      "type": "string",
+      "description": "Emoji icon of the scenario"
+    },
+    "scenario_category": {
+      "type": "string",
+      "description": "Category of the attack"
+    },
+    "scenario_severity": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Severity level"
+    },
+    "target_name": {
+      "type": "string",
+      "description": "Name of the target node"
+    },
+    "target_ip": {
+      "type": "string",
+      "description": "IP address of the target"
+    },
+    "target_os": {
+      "type": "string",
+      "description": "OS of the target"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "blocked",
+        "partial"
+      ],
+      "description": "Overall outcome of the attack"
+    },
+    "blocked_count": {
+      "type": "number",
+      "default": 0
+    },
+    "detected_count": {
+      "type": "number",
+      "default": 0
+    },
+    "connections_attempted": {
+      "type": "number",
+      "default": 0
+    },
+    "alert_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "log_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of log lines generated"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who ran the simulation"
+    }
+  },
+  "required": [
+    "scenario_name",
+    "target_name",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
