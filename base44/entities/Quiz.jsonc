@@ -1,0 +1,97 @@
+{
+  "name": "Quiz",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "path_id": {
+      "type": "string",
+      "description": "Associated learning path ID"
+    },
+    "room_id": {
+      "type": "string",
+      "description": "Associated room ID (optional)"
+    },
+    "linked_room_id": {
+      "type": "string",
+      "description": "Room/Lab to suggest if user fails this quiz"
+    },
+    "linked_room_name": {
+      "type": "string",
+      "description": "Cached name of the linked room for display"
+    },
+    "category": {
+      "type": "string",
+      "description": "Topic category"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "default": "medium"
+    },
+    "time_limit_minutes": {
+      "type": "number",
+      "default": 10
+    },
+    "pass_threshold": {
+      "type": "number",
+      "default": 70,
+      "description": "% required to pass"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correct_index": {
+            "type": "number"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
