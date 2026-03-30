@@ -1,0 +1,109 @@
+{
+  "name": "CustomScenario",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Scenario display name"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji icon"
+    },
+    "category": {
+      "type": "string",
+      "description": "Attack category label"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the attack"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "compatible_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of compatible target node IDs"
+    },
+    "phases": {
+      "type": "array",
+      "description": "Ordered attack phases",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Phase duration in ms (500\u20133000)"
+          }
+        }
+      }
+    },
+    "log_templates": {
+      "type": "array",
+      "description": "Log message templates per source type",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "attacker",
+              "firewall",
+              "ids",
+              "siem",
+              "system"
+            ]
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "severity"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
