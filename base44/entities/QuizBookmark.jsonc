@@ -1,0 +1,54 @@
+{
+  "name": "QuizBookmark",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who bookmarked the quiz"
+    },
+    "quiz_id": {
+      "type": "string",
+      "description": "ID of the bookmarked quiz"
+    },
+    "quiz_title": {
+      "type": "string",
+      "description": "Cached title of the quiz for display"
+    },
+    "quiz_difficulty": {
+      "type": "string",
+      "description": "Cached difficulty level"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "favorite",
+        "too_hard",
+        "revisit",
+        "other"
+      ],
+      "description": "Why the user bookmarked this quiz"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional personal notes about the quiz"
+    }
+  },
+  "required": [
+    "user_email",
+    "quiz_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
