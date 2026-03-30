@@ -1,0 +1,96 @@
+{
+  "name": "QuizAttempt",
+  "type": "object",
+  "properties": {
+    "quiz_id": {
+      "type": "string"
+    },
+    "quiz_title": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "path_id": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number",
+      "description": "Percentage score 0-100"
+    },
+    "points_earned": {
+      "type": "number"
+    },
+    "points_possible": {
+      "type": "number"
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "time_taken_seconds": {
+      "type": "number"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_index": {
+            "type": "number"
+          },
+          "selected_index": {
+            "type": "number"
+          },
+          "correct": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "quiz_id",
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
