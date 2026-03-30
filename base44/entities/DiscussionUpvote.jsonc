@@ -1,0 +1,52 @@
+{
+  "name": "DiscussionUpvote",
+  "type": "object",
+  "properties": {
+    "reply_id": {
+      "type": "string",
+      "description": "ID of the reply being upvoted"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of user who upvoted"
+    }
+  },
+  "required": [
+    "reply_id",
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
