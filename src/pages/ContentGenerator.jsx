@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Wand2, Server, BookOpen, Brain, Loader2, CheckCircle2, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Wand2, Server, BookOpen, Brain, Loader2, CheckCircle2, AlertCircle, ChevronDown, ChevronRight, RefreshCw, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileSelect } from '@/components/ui/MobileSelect';
 import { toast } from 'sonner';
@@ -124,6 +124,74 @@ function GeneratedPreview({ result, type, onSave, isSaving }) {
         <Button onClick={onSave} disabled={isSaving} size="sm" className="w-full">
           {isSaving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Save to Platform'}
         </Button>
+      </div>
+    </div>
+  );
+}
+
+function BulkAdminActions() {
+  const [genStatus, setGenStatus] = useState(null);
+  const [linkStatus, setLinkStatus] = useState(null);
+  const [isGenning, setIsGenning] = useState(false);
+  const [isLinking, setIsLinking] = useState(false);
+
+  const handleGenerateMaterial = async () => {
+    setIsGenning(true);
+    setGenStatus(null);
+    const rooms = await base44.entities.Room.list('-updated_date', 100);
+    const missing = rooms.filter(r => (r.tasks || []).some(t => !t.learning_material));
+    if (missing.length === 0) {
+      setGenStatus('All rooms already have learning material!');
+      setIsGenning(false);
+      return;
+    }
+    // Process in batches of 2 to avoid timeouts
+    let updated = 0;
+    for (let i = 0; i < missing.length; i += 2) {
+      const batch = missing.slice(i, i + 2).map(r => r.id);
+      const res = await base44.functions.invoke('generateLearningMaterial', { roomIds: batch });
+      updated += res.data?.results?.filter(r => r.status === 'updated').length || 0;
+    }
+    setGenStatus(`Done! Generated material for ${updated} room(s).`);
+    setIsGenning(false);
+  };
+
+  const handleLinkPaths = async () => {
+    setIsLinking(true);
+    setLinkStatus(null);
+    const res = await base44.functions.invoke('linkRoomsToPaths', {});
+    const count = res.data?.results?.length || 0;
+    setLinkStatus(`Linked rooms to ${count} learning path(s).`);
+    setIsLinking(false);
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-2xl p-6">
+      <h2 className="text-base font-semibold text-foreground mb-1">Bulk Admin Actions</h2>
+      <p className="text-xs text-muted-foreground mb-4">Maintenance tools to populate learning content across the platform.</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-2">
+          <div className="flex items-center gap-2">
+            <RefreshCw className="w-4 h-4 text-primary" />
+            <p className="text-sm font-medium text-foreground">Generate Learning Material</p>
+          </div>
+          <p className="text-xs text-muted-foreground">AI-generates task learning material for all rooms that are missing it.</p>
+          {genStatus && <p className="text-xs text-primary">{genStatus}</p>}
+          <Button size="sm" onClick={handleGenerateMaterial} disabled={isGenning} className="w-full">
+            {isGenning ? <><Loader2 className="w-3 h-3 animate-spin" /> Generating...</> : 'Run Generator'}
+          </Button>
+        </div>
+        <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-2">
+          <div className="flex items-center gap-2">
+            <Link className="w-4 h-4 text-primary" />
+            <p className="text-sm font-medium text-foreground">Link Rooms to Paths</p>
+          </div>
+          <p className="text-xs text-muted-foreground">Auto-assigns rooms to learning paths based on category & difficulty.</p>
+          {linkStatus && <p className="text-xs text-primary">{linkStatus}</p>}
+          <Button size="sm" onClick={handleLinkPaths} disabled={isLinking} className="w-full">
+            {isLinking ? <><Loader2 className="w-3 h-3 animate-spin" /> Linking...</> : 'Run Linker'}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -263,6 +331,9 @@ export default function ContentGenerator() {
         <GeneratorForm type={activeType} onGenerate={handleGenerate} isGenerating={isGenerating} />
         <GeneratedPreview result={generatedResult} type={activeType} onSave={handleSave} isSaving={isSaving} />
       </div>
+
+      {/* Bulk Admin Actions */}
+      <BulkAdminActions />
 
       {/* Recently Saved */}
       {savedItems.length > 0 && (
