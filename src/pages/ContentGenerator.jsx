@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Wand2, Server, BookOpen, Brain, Loader2, CheckCircle2, AlertCircle, ChevronDown, ChevronRight, RefreshCw, Link } from 'lucide-react';
+import { Wand2, Server, BookOpen, Brain, Loader2, CheckCircle2, AlertCircle, ChevronDown, ChevronRight, RefreshCw, Link, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileSelect } from '@/components/ui/MobileSelect';
 import { toast } from 'sonner';
@@ -129,6 +129,34 @@ function GeneratedPreview({ result, type, onSave, isSaving }) {
   );
 }
 
+function PathMaterialAction() {
+  const [status, setStatus] = useState(null);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const handleRun = async () => {
+    setIsRunning(true);
+    setStatus(null);
+    const res = await base44.functions.invoke('generatePathMaterial', {});
+    const updated = res.data?.results?.filter(r => r.status === 'updated').length || 0;
+    setStatus(updated > 0 ? `Generated material for ${updated} path(s).` : 'All paths already have material!');
+    setIsRunning(false);
+  };
+
+  return (
+    <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-2">
+      <div className="flex items-center gap-2">
+        <Map className="w-4 h-4 text-primary" />
+        <p className="text-sm font-medium text-foreground">Generate Path Learning Material</p>
+      </div>
+      <p className="text-xs text-muted-foreground">AI-generates tools & techniques guides for all learning paths missing material.</p>
+      {status && <p className="text-xs text-primary">{status}</p>}
+      <Button size="sm" onClick={handleRun} disabled={isRunning} className="w-full">
+        {isRunning ? <><Loader2 className="w-3 h-3 animate-spin" /> Generating...</> : 'Run Generator'}
+      </Button>
+    </div>
+  );
+}
+
 function BulkAdminActions() {
   const [genStatus, setGenStatus] = useState(null);
   const [linkStatus, setLinkStatus] = useState(null);
@@ -169,7 +197,7 @@ function BulkAdminActions() {
     <div className="bg-card border border-border rounded-2xl p-6">
       <h2 className="text-base font-semibold text-foreground mb-1">Bulk Admin Actions</h2>
       <p className="text-xs text-muted-foreground mb-4">Maintenance tools to populate learning content across the platform.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-2">
           <div className="flex items-center gap-2">
             <RefreshCw className="w-4 h-4 text-primary" />
@@ -192,6 +220,7 @@ function BulkAdminActions() {
             {isLinking ? <><Loader2 className="w-3 h-3 animate-spin" /> Linking...</> : 'Run Linker'}
           </Button>
         </div>
+        <PathMaterialAction />
       </div>
     </div>
   );

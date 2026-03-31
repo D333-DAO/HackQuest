@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import PathProgressHeader from '../components/paths/PathProgressHeader';
 import RoadmapStep from '../components/paths/RoadmapStep';
 import AssessmentQuizCard from '../components/paths/AssessmentQuizCard';
+import PathLearningMaterial from '../components/paths/PathLearningMaterial';
 
 export default function PathDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -87,6 +88,11 @@ export default function PathDetail() {
         progressPct={progressPct}
         isComplete={isPathComplete}
       />
+
+      {/* Learning Material */}
+      {path.learning_material && (
+        <PathLearningMaterial material={path.learning_material} />
+      )}
 
       {/* Roadmap */}
       <div>
