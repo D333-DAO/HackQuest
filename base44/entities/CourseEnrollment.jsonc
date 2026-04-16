@@ -1,0 +1,35 @@
+{
+  "name": "CourseEnrollment",
+  "type": "object",
+  "properties": {
+    "student_name": {
+      "type": "string",
+      "description": "Name of the enrolled student"
+    },
+    "course_title": {
+      "type": "string",
+      "description": "Title of the course enrolled in"
+    },
+    "enrollment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of enrollment"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Student's email address if found in the alert"
+    },
+    "source_email_id": {
+      "type": "string",
+      "description": "Gmail message ID that triggered this enrollment"
+    },
+    "raw_snippet": {
+      "type": "string",
+      "description": "Short snippet from the source email for reference"
+    }
+  },
+  "required": [
+    "student_name",
+    "course_title"
+  ]
+}
