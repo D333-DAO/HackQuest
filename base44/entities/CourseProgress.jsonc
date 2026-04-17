@@ -1,0 +1,33 @@
+{
+  "name": "CourseProgress",
+  "type": "object",
+  "properties": {
+    "enrollment_id": {
+      "type": "string",
+      "description": "Foreign key to CourseEnrollment"
+    },
+    "module_title": {
+      "type": "string",
+      "description": "Title of the course module"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed"
+      ],
+      "default": "not_started",
+      "description": "Progress status of the module"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the module was completed"
+    }
+  },
+  "required": [
+    "enrollment_id",
+    "module_title"
+  ]
+}
