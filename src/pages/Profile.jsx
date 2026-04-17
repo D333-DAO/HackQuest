@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trophy, Target, Flame, Calendar, LogOut, Upload, Plus, X, Loader2, ExternalLink, Lock, Trash2 } from 'lucide-react';
+import AIRecommendations from '@/components/progress/AIRecommendations';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -77,6 +78,25 @@ export default function Profile() {
   const { data: rooms = [] } = useQuery({
     queryKey: ['rooms'],
     queryFn: () => base44.entities.Room.list(),
+  });
+
+  const { data: enrollments = [] } = useQuery({
+    queryKey: ['my-enrollments', user?.email],
+    queryFn: () => base44.entities.CourseEnrollment.filter({ student_email: user.email }),
+    enabled: !!user?.email,
+  });
+
+  const { data: courseProgress = [] } = useQuery({
+    queryKey: ['my-course-progress', user?.email],
+    queryFn: async () => {
+      const myEnrollments = await base44.entities.CourseEnrollment.filter({ student_email: user.email });
+      if (!myEnrollments.length) return [];
+      const progressArrays = await Promise.all(
+        myEnrollments.map(e => base44.entities.CourseProgress.filter({ enrollment_id: e.id }))
+      );
+      return progressArrays.flat();
+    },
+    enabled: !!user?.email,
   });
 
   const totalPoints = progress.reduce((sum, p) => sum + (p.points_earned || 0), 0);
@@ -424,6 +444,14 @@ export default function Profile() {
           </div>
         )}
       </div>
+
+      {/* AI Recommendations */}
+      <AIRecommendations
+        studentName={user?.full_name}
+        studentEmail={user?.email}
+        enrollments={enrollments}
+        courseProgress={courseProgress}
+      />
 
       {/* Badges */}
       <div className="bg-card border border-border rounded-2xl p-6">

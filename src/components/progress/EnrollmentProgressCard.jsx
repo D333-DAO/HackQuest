@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Plus, Loader2, ChevronDown, ChevronRight } from 'lucide-react';
 import ModuleProgressRow from './ModuleProgressRow';
+import AIRecommendations from './AIRecommendations';
 import { toast } from 'sonner';
 
 function ProgressBar({ modules }) {
@@ -100,6 +101,16 @@ export default function EnrollmentProgressCard({ enrollment }) {
                 <ModuleProgressRow key={m.id} module={m} onUpdated={refresh} onDeleted={refresh} />
               ))}
             </div>
+          )}
+
+          {/* AI Recommendations */}
+          {modules.length > 0 && (
+            <AIRecommendations
+              studentName={enrollment.student_name}
+              studentEmail={enrollment.student_email}
+              enrollments={[enrollment]}
+              courseProgress={modules}
+            />
           )}
 
           {/* Add module */}
