@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2, ArrowLeft, ScrollText, GraduationCap } from 'lucide-react';
+import { Shield, Flame, Trophy, Menu, X, LayoutDashboard, Map, Server, GitBranch, FlaskConical, Zap, Wrench, History, User, ChevronDown, Swords, Brain, Bookmark, MessageSquare, Wand2, BarChart2, ArrowLeft, ScrollText, GraduationCap, Mail } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
 // Root paths — no back button shown on these
@@ -9,6 +9,7 @@ const ROOT_PATHS = new Set([
   '/SkillTree', '/Sandbox', '/AttackSimulator', '/ScenarioBuilder',
   '/AttackHistory', '/MitreScenarioBuilder', '/QuizEngine', '/SavedQuizzes',
   '/Community', '/NewDiscussion', '/ContentGenerator', '/Performance', '/AttackLogs', '/CourseProgressTracker',
+  '/About', '/Contact',
 ]);
 
 const NAV_ITEMS = [
@@ -31,6 +32,8 @@ const NAV_ITEMS = [
   { label: 'Performance',     path: '/Performance',       icon: BarChart2 },
   { label: 'Community',       path: '/Community',         icon: MessageSquare },
   { label: 'Leaderboard',     path: '/Leaderboard',       icon: Trophy },
+  { label: 'About',           path: '/About',             icon: Shield },
+  { label: 'Contact',         path: '/Contact',           icon: Mail },
 ];
 
 function NavLink({ item, mobile, onClose }) {

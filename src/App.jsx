@@ -39,6 +39,8 @@ const ContentGenerator   = lazy(() => import('./pages/ContentGenerator'));
 const Performance        = lazy(() => import('./pages/Performance'));
 const AttackLogs             = lazy(() => import('./pages/AttackLogs'));
 const CourseProgressTracker  = lazy(() => import('./pages/CourseProgressTracker'));
+const About                  = lazy(() => import('./pages/About'));
+const Contact                = lazy(() => import('./pages/Contact'));
 
 function PageLoader() {
   return (
@@ -100,6 +102,8 @@ const AuthenticatedApp = () => {
           <Route path="/Performance" element={<Performance />} />
           <Route path="/AttackLogs" element={<AttackLogs />} />
           <Route path="/CourseProgressTracker" element={<CourseProgressTracker />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/Contact" element={<Contact />} />
         </Route>
       </Route>
 
