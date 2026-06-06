@@ -46,6 +46,11 @@
           }
         }
       }
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes or description for this quiz attempt"
     }
   },
   "required": [

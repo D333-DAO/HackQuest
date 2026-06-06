@@ -28,6 +28,11 @@
     "path_id": {
       "type": "string",
       "description": "Learning path this progress belongs to (if any)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes or description for this progress record"
     }
   },
   "required": [

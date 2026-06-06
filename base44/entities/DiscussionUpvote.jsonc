@@ -9,6 +9,11 @@
     "user_email": {
       "type": "string",
       "description": "Email of user who upvoted"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes or description for this upvote"
     }
   },
   "required": [

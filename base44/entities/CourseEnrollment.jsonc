@@ -26,6 +26,11 @@
     "raw_snippet": {
       "type": "string",
       "description": "Short snippet from the source email for reference"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes or description for this enrollment"
     }
   },
   "required": [
