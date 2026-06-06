@@ -1,0 +1,47 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "The role of the user in the app",
+      "enum": [
+        "admin",
+        "user"
+      ]
+    },
+    "bio": {
+      "type": "string",
+      "description": "User bio (no links allowed)"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Link display title"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL starting with https://"
+          }
+        }
+      },
+      "description": "User links (must start with https://)"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Custom avatar image URL"
+    },
+    "use_gravatar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use Gravatar avatar"
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

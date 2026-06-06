@@ -2,15 +2,19 @@ import { Toaster } from "@/components/ui/toaster"
 import React, { Suspense, lazy } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { NotificationProvider } from '@/lib/NotificationContext';
 import NotificationCenter from '@/components/NotificationCenter';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import { Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 import PageTransition from './components/layout/PageTransition';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 // Lazy-loaded route components for code splitting
 const Dashboard          = lazy(() => import('./pages/Dashboard'));
@@ -45,7 +49,7 @@ function PageLoader() {
 }
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -56,46 +60,49 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
+  if (authError?.type === 'user_not_registered') {
+    return <UserNotRegisteredError />;
   }
 
   // Render the main app
   return (
     <Suspense fallback={<PageLoader />}>
     <Routes>
-      <Route path="/" element={<Navigate to="/Dashboard" replace />} />
-      <Route element={<AppLayout />}>
-        <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/Paths" element={<Paths />} />
-        <Route path="/PathDetail" element={<PathDetail />} />
-        <Route path="/Rooms" element={<Rooms />} />
-        <Route path="/RoomDetail" element={<RoomDetail />} />
-        <Route path="/Leaderboard" element={<Leaderboard />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/SkillTree" element={<SkillTree />} />
-        <Route path="/Sandbox" element={<Sandbox />} />
-        <Route path="/AttackSimulator" element={<AttackSimulator />} />
-        <Route path="/ScenarioBuilder" element={<ScenarioBuilder />} />
-        <Route path="/AttackHistory" element={<AttackHistory />} />
-        <Route path="/MitreScenarioBuilder" element={<MitreScenarioBuilder />} />
-        <Route path="/QuizEngine" element={<QuizEngine />} />
-        <Route path="/SavedQuizzes" element={<SavedQuizzes />} />
-        <Route path="/Community" element={<Community />} />
-        <Route path="/Discussion" element={<DiscussionDetail />} />
-        <Route path="/NewDiscussion" element={<NewDiscussion />} />
-        <Route path="/ContentGenerator" element={<ContentGenerator />} />
-        <Route path="/Performance" element={<Performance />} />
-        <Route path="/AttackLogs" element={<AttackLogs />} />
-        <Route path="/CourseProgressTracker" element={<CourseProgressTracker />} />
+      {/* Auth routes — public */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+
+      {/* All app routes require authentication */}
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/" element={<Navigate to="/Dashboard" replace />} />
+        <Route element={<AppLayout />}>
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Paths" element={<Paths />} />
+          <Route path="/PathDetail" element={<PathDetail />} />
+          <Route path="/Rooms" element={<Rooms />} />
+          <Route path="/RoomDetail" element={<RoomDetail />} />
+          <Route path="/Leaderboard" element={<Leaderboard />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/SkillTree" element={<SkillTree />} />
+          <Route path="/Sandbox" element={<Sandbox />} />
+          <Route path="/AttackSimulator" element={<AttackSimulator />} />
+          <Route path="/ScenarioBuilder" element={<ScenarioBuilder />} />
+          <Route path="/AttackHistory" element={<AttackHistory />} />
+          <Route path="/MitreScenarioBuilder" element={<MitreScenarioBuilder />} />
+          <Route path="/QuizEngine" element={<QuizEngine />} />
+          <Route path="/SavedQuizzes" element={<SavedQuizzes />} />
+          <Route path="/Community" element={<Community />} />
+          <Route path="/Discussion" element={<DiscussionDetail />} />
+          <Route path="/NewDiscussion" element={<NewDiscussion />} />
+          <Route path="/ContentGenerator" element={<ContentGenerator />} />
+          <Route path="/Performance" element={<Performance />} />
+          <Route path="/AttackLogs" element={<AttackLogs />} />
+          <Route path="/CourseProgressTracker" element={<CourseProgressTracker />} />
+        </Route>
       </Route>
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
     </Suspense>

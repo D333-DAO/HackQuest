@@ -43,6 +43,10 @@
         "type": "string"
       },
       "description": "Ordered list of room IDs in this path"
+    },
+    "learning_material": {
+      "type": "string",
+      "description": "Comprehensive markdown learning material covering tools, techniques, and concepts for this path"
     }
   },
   "required": [
