@@ -466,6 +466,8 @@ Return JSON:
           className="flex-1 bg-transparent outline-none text-white font-mono text-xs caret-red-400 placeholder-slate-700 disabled:opacity-40"
           placeholder={ctx.target ? `exploit ${ctx.target.ip}…` : 'select a target first…'}
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
           spellCheck={false}
         />
         {input && (

@@ -269,8 +269,8 @@ export default function NetworkTopology() {
                 />
                 {/* Animated dot along attack path */}
                 {isOnPath && (
-                  <circle r="3" fill="#ef4444" opacity="0.9">
-                    <animateMotion
+                 <circle r="3" fill="#ef4444" opacity="0.9" style={{ willChange: 'transform' }}>
+                   <animateMotion
                       dur="1.2s"
                       repeatCount="indefinite"
                       path={`M${px(from.x)},${py(from.y)} L${px(to.x)},${py(to.y)}`}
@@ -302,25 +302,28 @@ export default function NetworkTopology() {
               >
                 {/* Pulse ring for status */}
                 {st.pulse && !isSelected && (
-                  <circle r={r + 8} fill="none" stroke={st.color} strokeWidth="1" opacity="0.3">
-                    <animate attributeName="r" values={`${r+4};${r+14};${r+4}`} dur="2s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite" />
-                  </circle>
+                 <circle r={r + 8} fill="none" stroke={st.color} strokeWidth="1" opacity="0.3" style={{ willChange: 'transform' }}>
+                   <animate attributeName="r" values={`${r+4};${r+14};${r+4}`} dur="2s" repeatCount="indefinite" />
+                   <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite" />
+                 </circle>
                 )}
 
                 {/* Selection ring */}
                 {isSelected && (
-                  <circle r={r + 7} fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.7" strokeDasharray="4 2">
-                    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite" />
-                  </circle>
+                 <circle r={r + 7} fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.7" strokeDasharray="4 2" style={{ willChange: 'transform' }}>
+                   <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite" />
+                 </circle>
                 )}
 
                 {/* Attack path highlight ring */}
                 {isOnPath && !isSelected && selected && (
-                  <circle r={r + 5} fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.5">
-                    <animate attributeName="opacity" values="0.5;0.15;0.5" dur="1.5s" repeatCount="indefinite" />
-                  </circle>
+                 <circle r={r + 5} fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.5" style={{ willChange: 'transform' }}>
+                   <animate attributeName="opacity" values="0.5;0.15;0.5" dur="1.5s" repeatCount="indefinite" />
+                 </circle>
                 )}
+
+                {/* Invisible touch target — ensures 44×44px minimum on mobile */}
+                <rect x="-22" y="-22" width="44" height="44" fill="transparent" />
 
                 {/* Main circle */}
                 <circle

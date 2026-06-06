@@ -327,6 +327,8 @@ Return JSON:
           className="flex-1 bg-transparent outline-none text-white font-mono text-xs caret-primary placeholder-slate-600 disabled:opacity-50"
           placeholder={target ? `Enter command (e.g. nmap -sV ${target.ip})` : 'Select a target node to begin...'}
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
           spellCheck={false}
         />
         {input && (

@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { MobileSelect } from '@/components/ui/MobileSelect';
 
 export default function NewDiscussion() {
   const navigate = useNavigate();
@@ -134,44 +135,35 @@ export default function NewDiscussion() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-muted-foreground uppercase">Learning Path (optional)</label>
-              <select
+              <MobileSelect
                 value={selectedPath}
-                onChange={(e) => setSelectedPath(e.target.value)}
-                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/40"
-              >
-                <option value="">None</option>
-                {paths.map(p => (
-                  <option key={p.id} value={p.id}>{p.title}</option>
-                ))}
-              </select>
+                onValueChange={setSelectedPath}
+                placeholder="None"
+                options={[{ value: '', label: 'None' }, ...paths.map(p => ({ value: p.id, label: p.title }))]}
+                triggerClassName="w-full bg-secondary border-border text-sm"
+              />
             </div>
 
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-muted-foreground uppercase">Quiz (optional)</label>
-              <select
+              <MobileSelect
                 value={selectedQuiz}
-                onChange={(e) => setSelectedQuiz(e.target.value)}
-                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/40"
-              >
-                <option value="">None</option>
-                {quizzes.map(q => (
-                  <option key={q.id} value={q.id}>{q.title}</option>
-                ))}
-              </select>
+                onValueChange={setSelectedQuiz}
+                placeholder="None"
+                options={[{ value: '', label: 'None' }, ...quizzes.map(q => ({ value: q.id, label: q.title }))]}
+                triggerClassName="w-full bg-secondary border-border text-sm"
+              />
             </div>
 
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-muted-foreground uppercase">Lab (optional)</label>
-              <select
+              <MobileSelect
                 value={selectedLab}
-                onChange={(e) => setSelectedLab(e.target.value)}
-                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/40"
-              >
-                <option value="">None</option>
-                {rooms.map(r => (
-                  <option key={r.id} value={r.id}>{r.title}</option>
-                ))}
-              </select>
+                onValueChange={setSelectedLab}
+                placeholder="None"
+                options={[{ value: '', label: 'None' }, ...rooms.map(r => ({ value: r.id, label: r.title }))]}
+                triggerClassName="w-full bg-secondary border-border text-sm"
+              />
             </div>
           </div>
 

@@ -185,7 +185,7 @@ function VulnPanel({ nodeId, nodeState, onClose, onSelect, isSelected }) {
 function AttackPacket({ fromPt, toPt, color, delay = 0, duration = 1.2 }) {
   const path = `M${fromPt.x},${fromPt.y} L${toPt.x},${toPt.y}`;
   return (
-    <circle r="4" fill={color} opacity="0.9" filter="url(#packet-glow)">
+    <circle r="4" fill={color} opacity="0.9" filter="url(#packet-glow)" style={{ willChange: 'transform' }}>
       <animateMotion dur={`${duration}s`} repeatCount="indefinite" begin={`${delay}s`} path={path} />
       <animate attributeName="opacity" values="0;0.9;0.9;0" dur={`${duration}s`} repeatCount="indefinite" begin={`${delay}s`} />
     </circle>
@@ -396,7 +396,7 @@ export default function SandboxTopology({ target, onSelectTarget, isRunning, cur
               >
                 {/* Pulse ring — attack status */}
                 {hasStatus && (
-                  <circle r={r + 10} fill="none" stroke={st.ring} strokeWidth="1" opacity="0">
+                  <circle r={r + 10} fill="none" stroke={st.ring} strokeWidth="1" opacity="0" style={{ willChange: 'transform' }}>
                     <animate attributeName="r" values={`${r+5};${r+16};${r+5}`} dur="2s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite" />
                   </circle>
@@ -404,17 +404,20 @@ export default function SandboxTopology({ target, onSelectTarget, isRunning, cur
 
                 {/* Target highlight ring */}
                 {isTargeted && (
-                  <circle r={r + 8} fill="none" stroke="#a3e635" strokeWidth="2" strokeDasharray="5 3" opacity="0.7">
+                  <circle r={r + 8} fill="none" stroke="#a3e635" strokeWidth="2" strokeDasharray="5 3" opacity="0.7" style={{ willChange: 'transform' }}>
                     <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite" />
                   </circle>
                 )}
 
                 {/* Selection ring */}
                 {isSelected && !isTargeted && (
-                  <circle r={r + 7} fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.6">
+                  <circle r={r + 7} fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.6" style={{ willChange: 'transform' }}>
                     <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="7s" repeatCount="indefinite" />
                   </circle>
                 )}
+
+                {/* Invisible touch target — ensures 44×44px minimum on mobile */}
+                <rect x="-22" y="-22" width="44" height="44" fill="transparent" />
 
                 {/* Main node circle */}
                 <circle

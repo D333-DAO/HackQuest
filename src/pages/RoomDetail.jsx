@@ -255,6 +255,10 @@ export default function RoomDetail() {
                               value={answers[key] || ''}
                               onChange={(e) => setAnswers(prev => ({ ...prev, [key]: e.target.value }))}
                               className="h-9 bg-background text-sm"
+                              autoComplete="off"
+                              autoCorrect="off"
+                              autoCapitalize="none"
+                              spellCheck={false}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' && answers[key]) {
                                   submitMutation.mutate({ taskIdx, qIdx, answer: answers[key] });

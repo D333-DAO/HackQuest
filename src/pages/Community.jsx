@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import DiscussionCard from '@/components/discussion/DiscussionCard';
+import { MobileSelect } from '@/components/ui/MobileSelect';
 
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Most Recent' },
@@ -116,15 +117,12 @@ export default function Community() {
           </div>
 
           {/* Sort */}
-          <select
+          <MobileSelect
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="text-xs px-3 py-1 rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:border-primary/40"
-          >
-            {SORT_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+            onValueChange={setSortBy}
+            options={SORT_OPTIONS}
+            triggerClassName="text-xs px-3 py-1 rounded-lg bg-secondary border border-border text-foreground h-auto min-h-0"
+          />
         </div>
 
         {/* Tag filter */}
