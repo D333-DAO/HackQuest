@@ -36,6 +36,7 @@
   ],
   "rls": {
     "create": {
+      "data.author_email": "{{user.email}}",
       "user_condition": {
         "$ne": null
       }

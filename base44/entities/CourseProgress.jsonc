@@ -31,11 +31,7 @@
     "module_title"
   ],
   "rls": {
-    "create": {
-      "user_condition": {
-        "$ne": null
-      }
-    },
+    "create": null,
     "read": {
       "$or": [
         {
