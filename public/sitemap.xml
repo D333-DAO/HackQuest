@@ -1,41 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
-  <!-- Public / Landing -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://hack-quest.com/</loc>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <lastmod>2026-06-06</lastmod>
   </url>
-
-  <!-- Auth pages -->
+  <url>
+    <loc>https://hack-quest.com/Dashboard</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/Paths</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/Rooms</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/QuizEngine</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/Leaderboard</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/Community</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/AttackSimulator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://hack-quest.com/SkillTree</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
   <url>
     <loc>https://hack-quest.com/login</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-06-06</lastmod>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://hack-quest.com/register</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-    <lastmod>2026-06-06</lastmod>
+    <priority>0.5</priority>
   </url>
-  <url>
-    <loc>https://hack-quest.com/forgot-password</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <lastmod>2026-06-06</lastmod>
-  </url>
-  <url>
-    <loc>https://hack-quest.com/reset-password</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
-    <lastmod>2026-06-06</lastmod>
-  </url>
-
 </urlset>
