@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { MobileSelect } from '@/components/ui/MobileSelect';
 
-export default function NewDiscussion() {
+export default function CreateDiscussion() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [title, setTitle] = useState('');

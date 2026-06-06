@@ -34,7 +34,7 @@ const QuizEngine         = lazy(() => import('./pages/QuizEngine'));
 const SavedQuizzes       = lazy(() => import('./pages/SavedQuizzes'));
 const Community          = lazy(() => import('./pages/Community'));
 const DiscussionDetail   = lazy(() => import('./pages/DiscussionDetail'));
-const NewDiscussion      = lazy(() => import('./pages/NewDiscussion'));
+const CreateDiscussion   = lazy(() => import('./pages/CreateDiscussion'));
 const ContentGenerator   = lazy(() => import('./pages/ContentGenerator'));
 const Performance        = lazy(() => import('./pages/Performance'));
 const AttackLogs             = lazy(() => import('./pages/AttackLogs'));
@@ -97,7 +97,7 @@ const AuthenticatedApp = () => {
           <Route path="/SavedQuizzes" element={<SavedQuizzes />} />
           <Route path="/Community" element={<Community />} />
           <Route path="/Discussion" element={<DiscussionDetail />} />
-          <Route path="/NewDiscussion" element={<NewDiscussion />} />
+          <Route path="/CreateDiscussion" element={<CreateDiscussion />} />
           <Route path="/ContentGenerator" element={<ContentGenerator />} />
           <Route path="/Performance" element={<Performance />} />
           <Route path="/AttackLogs" element={<AttackLogs />} />

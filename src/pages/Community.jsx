@@ -99,7 +99,7 @@ export default function Community() {
           <p className="text-sm text-muted-foreground mt-1">Ask questions, share solutions, and learn together</p>
         </div>
         {user && (
-          <Link to="/NewDiscussion">
+          <Link to="/CreateDiscussion">
             <Button className="gap-2 shrink-0">
               <Plus className="w-4 h-4" /> Start Discussion
             </Button>
@@ -190,7 +190,7 @@ export default function Community() {
           <Flame className="w-12 h-12 text-muted-foreground/30 mx-auto" />
           <p className="text-muted-foreground">No discussions found. Be the first to start one!</p>
           {user && (
-            <Link to="/NewDiscussion">
+            <Link to="/CreateDiscussion">
               <Button className="gap-2">
                 <Plus className="w-4 h-4" /> Create First Discussion
               </Button>

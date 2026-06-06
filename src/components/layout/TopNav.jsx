@@ -8,7 +8,7 @@ const ROOT_PATHS = new Set([
   '/Dashboard', '/Paths', '/Rooms', '/Leaderboard', '/Profile',
   '/SkillTree', '/Sandbox', '/AttackSimulator', '/ScenarioBuilder',
   '/AttackHistory', '/MitreScenarioBuilder', '/QuizEngine', '/SavedQuizzes',
-  '/Community', '/NewDiscussion', '/ContentGenerator', '/Performance', '/AttackLogs', '/CourseProgressTracker',
+  '/Community', '/CreateDiscussion', '/ContentGenerator', '/Performance', '/AttackLogs', '/CourseProgressTracker',
   '/About', '/Contact',
 ]);
 
