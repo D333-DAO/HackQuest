@@ -34,7 +34,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             <Shield className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-foreground tracking-tight">TryHackMe</h1>
+            <h1 className="text-lg font-bold text-foreground tracking-tight">HackQuest</h1>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Cyber Training</p>
           </div>
           <Button variant="ghost" size="icon" className="ml-auto lg:hidden" onClick={() => setIsOpen(false)}>

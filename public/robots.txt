@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Public pages
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+
+# Block authenticated-only app pages from indexing
+Disallow: /Dashboard
+Disallow: /Paths
+Disallow: /PathDetail
+Disallow: /Rooms
+Disallow: /RoomDetail
+Disallow: /Leaderboard
+Disallow: /Profile
+Disallow: /SkillTree
+Disallow: /Sandbox
+Disallow: /AttackSimulator
+Disallow: /ScenarioBuilder
+Disallow: /AttackHistory
+Disallow: /MitreScenarioBuilder
+Disallow: /QuizEngine
+Disallow: /SavedQuizzes
+Disallow: /Community
+Disallow: /Discussion
+Disallow: /NewDiscussion
+Disallow: /ContentGenerator
+Disallow: /Performance
+Disallow: /AttackLogs
+Disallow: /CourseProgressTracker
+
+Sitemap: https://hack-quest.com/sitemap.xml
