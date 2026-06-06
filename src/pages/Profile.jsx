@@ -267,7 +267,10 @@ export default function Profile() {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={() => base44.auth.logout()}
+                    onClick={async () => {
+                      await base44.functions.invoke('deleteUserAccount', {});
+                      base44.auth.logout();
+                    }}
                   >
                     Delete Account
                   </AlertDialogAction>

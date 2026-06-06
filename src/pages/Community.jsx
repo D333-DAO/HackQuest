@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Search, Filter, Flame } from 'lucide-react';
+import { ArrowLeft, Plus, Search, Filter, Flame, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import DiscussionCard from '@/components/discussion/DiscussionCard';
 import { MobileSelect } from '@/components/ui/MobileSelect';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Most Recent' },
@@ -19,11 +20,19 @@ export default function Community() {
   const [filterSolved, setFilterSolved] = useState('all'); // all, solved, unsolved
   const [filterTag, setFilterTag] = useState('');
 
+  const queryClient = useQueryClient();
   const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
   const { data: discussions = [], isLoading } = useQuery({
     queryKey: ['discussions'],
     queryFn: () => base44.entities.Discussion.list('-created_date', 100),
   });
+
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ['discussions'] });
+  }, [queryClient]);
+
+  const { containerRef, pullDistance, refreshing, onTouchStart, onTouchMove, onTouchEnd } =
+    usePullToRefresh(handleRefresh);
 
   // Extract all unique tags
   const allTags = useMemo(() => {
@@ -63,7 +72,22 @@ export default function Community() {
   }, [discussions, searchTerm, sortBy, filterSolved, filterTag]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div
+      ref={containerRef}
+      className="max-w-4xl mx-auto space-y-6 overflow-y-auto"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Pull-to-refresh indicator */}
+      {(pullDistance > 0 || refreshing) && (
+        <div
+          className="flex items-center justify-center text-primary transition-all"
+          style={{ height: refreshing ? 48 : pullDistance, overflow: 'hidden' }}
+        >
+          <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} style={{ opacity: Math.min(pullDistance / 72, 1) }} />
+        </div>
+      )}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <Link to="/Dashboard" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-3 transition-colors">

@@ -382,7 +382,7 @@ Return JSON:
   return (
     <div
       className="bg-[#0d1117] border border-border rounded-2xl overflow-hidden flex flex-col"
-      style={{ minHeight: 480 }}
+      style={{ minHeight: 320, maxHeight: '60dvh' }}
       onClick={() => inputRef.current?.focus()}
     >
       {/* Title bar */}
@@ -424,7 +424,7 @@ Return JSON:
       </div>
 
       {/* Output area */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-3 space-y-0.5 font-mono text-xs" style={{ minHeight: 280 }}>
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-3 space-y-0.5 font-mono text-xs min-h-0">
         {history.map((entry, i) => {
           if (entry.type === 'banner' || entry.type === 'output' || entry.type === 'system') {
             return (

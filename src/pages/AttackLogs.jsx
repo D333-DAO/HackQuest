@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { Shield, AlertTriangle, Flame, CheckCircle2, XCircle, Clock, Filter, RefreshCw, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { MobileSelect } from '@/components/ui/MobileSelect';
@@ -111,6 +112,13 @@ export default function AttackLogs() {
   const [days,     setDays]     = useState('all');
   const [live,     setLive]     = useState(true);
 
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ['attack-logs'] });
+  }, [queryClient]);
+
+  const { containerRef, pullDistance, refreshing, onTouchStart, onTouchMove, onTouchEnd } =
+    usePullToRefresh(handleRefresh);
+
   const { data: logs = [], isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['attack-logs'],
     queryFn: () => base44.entities.AttackLog.list('-created_date', 200),
@@ -144,7 +152,22 @@ export default function AttackLogs() {
   const critical = filtered.filter(l => l.scenario_severity === 'critical').length;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div
+      ref={containerRef}
+      className="space-y-6 max-w-6xl mx-auto overflow-y-auto"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Pull-to-refresh indicator */}
+      {(pullDistance > 0 || refreshing) && (
+        <div
+          className="flex items-center justify-center text-primary transition-all"
+          style={{ height: refreshing ? 48 : pullDistance, overflow: 'hidden' }}
+        >
+          <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} style={{ opacity: Math.min(pullDistance / 72, 1) }} />
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>

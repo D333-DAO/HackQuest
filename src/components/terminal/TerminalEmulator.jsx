@@ -212,9 +212,12 @@ export default function TerminalEmulator({ roomContext }) {
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/60">
+    <div
+      className="rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/60 flex flex-col"
+      style={{ maxHeight: '60dvh', minHeight: 320 }}
+    >
       {/* macOS-style title bar */}
-      <div className="flex items-center gap-3 px-4 py-2.5 bg-[#1a1a1a] border-b border-[#2a2a2a]">
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-[#1a1a1a] border-b border-[#2a2a2a] shrink-0">
         <div className="flex gap-1.5">
           <div className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-default" />
           <div className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-default" />
@@ -230,11 +233,11 @@ export default function TerminalEmulator({ roomContext }) {
       </div>
       <div
         ref={containerRef}
-        className="w-full"
-        style={{ height: '420px', padding: '6px', backgroundColor: '#0a0a0a' }}
+        className="w-full flex-1 min-h-0"
+        style={{ padding: '6px', backgroundColor: '#0a0a0a' }}
       />
       {/* Status bar */}
-      <div className="flex items-center justify-between px-4 py-1.5 bg-[#1a1a1a] border-t border-[#2a2a2a]">
+      <div className="flex items-center justify-between px-4 py-1.5 bg-[#1a1a1a] border-t border-[#2a2a2a] shrink-0">
         <span className="text-[10px] text-[#555] font-mono">
           ↑↓ history &nbsp;|&nbsp; ctrl+c cancel &nbsp;|&nbsp; ctrl+l clear
         </span>
