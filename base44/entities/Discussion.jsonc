@@ -71,7 +71,11 @@
     "author_email"
   ],
   "rls": {
-    "create": {},
+    "create": {
+      "user_condition": {
+        "$ne": null
+      }
+    },
     "read": {},
     "update": {
       "$or": [
