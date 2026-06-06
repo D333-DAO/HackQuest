@@ -3,7 +3,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
 
-  // Allow scheduled invocation (no user auth) via service role
+  // Allow scheduled automation invocations; otherwise require admin
+  const platformToken = req.headers.get('x-base44-automation') || req.headers.get('x-platform-token');
+  const appId = Deno.env.get('BASE44_APP_ID');
+  if (!platformToken || platformToken !== appId) {
+    const user = await base44.auth.me().catch(() => null);
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  }
+
   const serviceBase44 = base44.asServiceRole;
 
   // Fetch all users
