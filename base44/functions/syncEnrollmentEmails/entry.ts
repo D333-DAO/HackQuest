@@ -1,6 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
+  // Verify this is an internal platform webhook — reject direct invocations
+  const platformToken = req.headers.get('x-base44-automation') || req.headers.get('x-platform-token');
+  const appId = Deno.env.get('BASE44_APP_ID');
+  if (!platformToken || platformToken !== appId) {
+    const base44Check = createClientFromRequest(req);
+    const user = await base44Check.auth.me().catch(() => null);
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  }
+
   const body = await req.json();
   const base44 = createClientFromRequest(req);
 
