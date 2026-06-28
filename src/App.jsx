@@ -131,7 +131,7 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <QueryClientProvider client={queryClientInstance}>
-          <Router>
+          <Router basename="/HackQuest">
             <AuthenticatedApp />
           </Router>
           <Toaster />
